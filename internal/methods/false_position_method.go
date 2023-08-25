@@ -8,42 +8,49 @@ import (
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 )
 
-type BisectionMethod struct {
+type FalsePositionMethod struct {
 	commonState[float64]
 }
 
-func (mtd *BisectionMethod) Run(
+func (mtd *FalsePositionMethod) Run(
 	a, b float64,
 	fX models.RootFunctionCallback[float64], epsilon float64, maxIterations uint32,
 ) (result float64, totalIteration uint32, err error) {
-	// Check for signal change
 	if fX(a)*fX(b) >= 0 {
-		err = errors.New("you have not assumed right a and b\n")
+		err = errors.New("there's no root on given interval\n")
 		return
 	}
 
 	var absoluteError float64 = 1
-	for absoluteError > epsilon && totalIteration < maxIterations {
+	for math.Abs(absoluteError) > epsilon && totalIteration < maxIterations {
 		totalIteration += 1
-		oldResult := result
-		if result = (a + b) / 2; totalIteration > 1 {
+		var (
+			fResultA, fResultB = fX(a), fX(b)
+			oldResult          = result
+		)
+
+		if fResultA == fResultB {
+			err = errors.New("division by zero error")
+			return
+		}
+		if result = b - (fResultB*(a-b))/(fResultA-fResultB); totalIteration > 1 {
 			absoluteError = math.Abs(oldResult - result)
 		}
+		rootResult := fX(result)
 
-		fR := fX(result)
 		mtd.interactions = append(mtd.interactions, models.InteractionData[float64]{
 			Interaction:    uint64(totalIteration),
 			InputValues:    []float64{a, b},
 			AbsoluteError:  absoluteError,
-			FunctionResult: fR,
+			FunctionResult: rootResult,
 			Value:          result,
 		})
 
-		if fR == 0 {
+		if rootResult == 0 {
 			return
 		}
 
-		if fX(a)*fR < 0 {
+		if fResultA*rootResult < 0 {
 			b = result
 		} else {
 			a = result
