@@ -25,7 +25,7 @@ func WriteInteractionAsCSV(output io.Writer, data []models.InteractionData[float
 	for i := 0; i < totalInputs; i++ {
 		headers = append(headers, string([]rune{'a' + rune(i)}))
 	}
-	headers = append(headers, []string{"Found-X", "f(x)", "Absolute-Error"}...)
+	headers = append(headers, []string{"Found-X", "f(x)", "Relative-Error"}...)
 
 	if err = writer.Write(headers); err != nil {
 		return
@@ -33,14 +33,14 @@ func WriteInteractionAsCSV(output io.Writer, data []models.InteractionData[float
 
 	for _, value := range data {
 		valueInput[0] = strconv.FormatUint(value.Interaction, 10)
-		var index = 1
+		index := 1
 		for count, inputValue := range value.InputValues {
 			index += count
 			valueInput[index] = strconv.FormatFloat(inputValue, 'f', 6, 64)
 		}
 		valueInput[index+1] = strconv.FormatFloat(value.Value, 'f', 6, 64)
 		valueInput[index+2] = strconv.FormatFloat(value.FunctionResult, 'f', 6, 64)
-		valueInput[index+3] = strconv.FormatFloat(value.AbsoluteError, 'f', 6, 64)
+		valueInput[index+3] = strconv.FormatFloat(value.RelativeError, 'f', 6, 64)
 		if err = writer.Write(valueInput); err != nil {
 			return
 		}

@@ -10,7 +10,7 @@ type (
 	InteractionData[T Numeric]      struct {
 		Interaction    uint64
 		InputValues    []T
-		AbsoluteError  T
+		RelativeError  T
 		Value          T
 		FunctionResult T
 	}

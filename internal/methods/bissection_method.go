@@ -34,7 +34,7 @@ func (mtd *BisectionMethod) Run(
 		mtd.interactions = append(mtd.interactions, models.InteractionData[float64]{
 			Interaction:    uint64(totalIteration),
 			InputValues:    []float64{a, b},
-			AbsoluteError:  absoluteError,
+			RelativeError:  absoluteError,
 			FunctionResult: fR,
 			Value:          result,
 		})
