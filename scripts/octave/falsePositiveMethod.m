@@ -1,7 +1,7 @@
 function [result, totalIteration, err] = falsePositiveMethod(a, b, fX, epsilon, maxIterations)
     err = ""; % Initialize err to an empty string
     if fX(a) * fX(b) >= 0
-        err = "there's no root on given interval\n";
+        err = "there is no root on given interval";
         result = NaN;
         totalIteration = 0;
         return
@@ -11,7 +11,7 @@ function [result, totalIteration, err] = falsePositiveMethod(a, b, fX, epsilon, 
     totalIteration = 0;
     result = 0;
 
-    while abs(absoluteError) > epsilon && totalIteration < maxIterations
+    while (abs(absoluteError) > epsilon && totalIteration < maxIterations)
         totalIteration += 1;
         fResultA = fX(a);
         fResultB = fX(b);
@@ -21,6 +21,7 @@ function [result, totalIteration, err] = falsePositiveMethod(a, b, fX, epsilon, 
             err = "division by zero error";
             return;
         end
+
         result = b - (fResultB * (a - b)) / (fResultA - fResultB);
         if totalIteration > 1
             absoluteError = abs(oldResult - result);
@@ -42,4 +43,5 @@ function [result, totalIteration, err] = falsePositiveMethod(a, b, fX, epsilon, 
     if totalIteration >= maxIterations
         err = ["failed to find root after ", num2str(totalIteration), " iterations"];
     end
+
 endfunction
