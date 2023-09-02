@@ -16,21 +16,16 @@ func (mtd *SecantMethod) Run(
 	x0, x1 float64, fX models.RootFunctionCallback[float64],
 	epsilon float64, maxIterations uint32,
 ) (result float64, totalIteration uint32, err error) {
-	var (
-		relativeError float64 = 1
-		oldResult             = x0
-	)
-	result = x1
+	var relativeError float64 = 1
+
 	for math.Abs(relativeError) >= epsilon && totalIteration < maxIterations {
 		totalIteration += 1
-		oldResult, result = x0, x1
 		fPrevious, fCurrent := fX(x0), fX(x1)
 
 		// Apply the Secant Method formula
-		result = ((oldResult * fCurrent) - (result * fPrevious)) / (fCurrent - fPrevious)
-
+		result = ((x0 * fCurrent) - (x1 * fPrevious)) / (fCurrent - fPrevious)
 		if result != 0 && totalIteration > 1 {
-			relativeError = math.Abs(oldResult-result) / result
+			relativeError = math.Abs(x0-result) / result
 		}
 
 		rootResult := fX(result)
@@ -42,7 +37,7 @@ func (mtd *SecantMethod) Run(
 			Value:          result,
 		})
 
-		x0, x1 = x1, result
+		x0, x1 = result, x0
 	}
 
 	mtd.finalResult = result
