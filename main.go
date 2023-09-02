@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 	"math"
+	"os"
 	"strings"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/methods"
@@ -23,16 +23,10 @@ func quest01Bisection() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		slog.Error("Failed to find root", slog.String("error", err.Error()))
+		reportError(err)
 		return
 	}
-	slog.Info(
-		fmt.Sprintf(
-			"The value of root is : %.5f. After %d iteractions\n",
-			result, totalInteractions,
-		),
-		slog.String("output-table", buffer.String()),
-	)
+	reportResult("Bisection", result, totalInteractions, &buffer)
 }
 
 func quest02FalsePositive() {
@@ -52,16 +46,10 @@ func quest02FalsePositive() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		slog.Error("Failed to find root", slog.String("error", err.Error()))
+		reportError(err)
 		return
 	}
-	slog.Info(
-		fmt.Sprintf(
-			"The value of root is : %.5f. After %d iteractions\n",
-			result, totalInteractions,
-		),
-		slog.String("output-table", buffer.String()),
-	)
+	reportResult("FalsePositive", result, totalInteractions, &buffer)
 }
 
 func quest03LinearIteration() {
@@ -84,16 +72,10 @@ func quest03LinearIteration() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		slog.Error("Failed to find root", slog.String("error", err.Error()))
+		reportError(err)
 		return
 	}
-	slog.Info(
-		fmt.Sprintf(
-			"The value of root is : %.5f. After %d iteractions\n",
-			result, totalInteractions,
-		),
-		slog.String("output-table", buffer.String()),
-	)
+	reportResult("LinearIteration", result, totalInteractions, &buffer)
 }
 
 func quest04NewtonRaphson() {
@@ -116,16 +98,10 @@ func quest04NewtonRaphson() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		slog.Error("Failed to find root", slog.String("error", err.Error()))
+		reportError(err)
 		return
 	}
-	slog.Info(
-		fmt.Sprintf(
-			"The value of root is : %.5f. After %d iteractions\n",
-			result, totalInteractions,
-		),
-		slog.String("output-table", buffer.String()),
-	)
+	reportResult("NewtonRaphson", result, totalInteractions, &buffer)
 }
 
 func quest05Secant() {
@@ -147,19 +123,23 @@ func quest05Secant() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		slog.Error("Failed to find root", slog.String("error", err.Error()))
+		reportError(err)
 		return
 	}
-	slog.Info(
-		fmt.Sprintf(
-			"The value of root is : %.5f. After %d iteractions\n",
-			result, totalInteractions,
-		),
-		slog.String("output-table", buffer.String()),
-	)
+	reportResult("Secant", result, totalInteractions, &buffer)
 }
 
 func main() {
+	slog.SetDefault(
+		slog.New(
+			slog.NewTextHandler(
+				os.Stdout,
+				&slog.HandlerOptions{
+					Level: slog.LevelInfo,
+				},
+			),
+		),
+	)
 	quest01Bisection()
 	quest02FalsePositive()
 	quest03LinearIteration()
