@@ -1,11 +1,10 @@
 package methods
 
 import (
-	"errors"
 	"math"
-	"strconv"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
+	"github.com/jictyvoo/tec217_computing-methods/internal/models/mtderrs"
 )
 
 type SecantMethod struct {
@@ -29,22 +28,17 @@ func (mtd *SecantMethod) Run(
 		}
 
 		rootResult := fX(result)
-		mtd.interactions = append(mtd.interactions, models.InteractionData[float64]{
-			Interaction:    uint64(totalIteration),
-			InputValues:    []float64{x0, x1},
-			RelativeError:  relativeError,
-			FunctionResult: rootResult,
-			Value:          result,
-		})
+		mtd.registerInteraction(
+			[]float64{x0, x1}, totalIteration,
+			relativeError, rootResult, result,
+		)
 
 		x0, x1 = result, x0
 	}
 
 	mtd.finalResult = result
 	if totalIteration >= maxIterations {
-		err = errors.New(
-			"failed to find root after " + strconv.Itoa(int(totalIteration)) + " iterations",
-		)
+		err = mtderrs.ErrMaxIterations(totalIteration)
 	}
 	return
 }

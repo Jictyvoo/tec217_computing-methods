@@ -3,9 +3,9 @@ package methods
 import (
 	"errors"
 	"math"
-	"strconv"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
+	"github.com/jictyvoo/tec217_computing-methods/internal/models/mtderrs"
 )
 
 type FalsePositionMethod struct {
@@ -38,13 +38,10 @@ func (mtd *FalsePositionMethod) Run(
 		}
 		rootResult := fX(result)
 
-		mtd.interactions = append(mtd.interactions, models.InteractionData[float64]{
-			Interaction:    uint64(totalIteration),
-			InputValues:    []float64{a, b},
-			RelativeError:  absoluteError,
-			FunctionResult: rootResult,
-			Value:          result,
-		})
+		mtd.registerInteraction(
+			[]float64{a, b}, totalIteration,
+			absoluteError, rootResult, result,
+		)
 
 		if rootResult == 0 {
 			return
@@ -59,9 +56,7 @@ func (mtd *FalsePositionMethod) Run(
 
 	mtd.finalResult = result
 	if totalIteration >= maxIterations {
-		err = errors.New(
-			"failed to find root after " + strconv.Itoa(int(totalIteration)) + " iterations",
-		)
+		err = mtderrs.ErrMaxIterations(totalIteration)
 	}
 	return
 }

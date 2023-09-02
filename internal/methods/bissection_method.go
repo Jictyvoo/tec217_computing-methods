@@ -3,9 +3,9 @@ package methods
 import (
 	"errors"
 	"math"
-	"strconv"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
+	"github.com/jictyvoo/tec217_computing-methods/internal/models/mtderrs"
 )
 
 type BisectionMethod struct {
@@ -18,7 +18,7 @@ func (mtd *BisectionMethod) Run(
 ) (result float64, totalIteration uint32, err error) {
 	// Check for signal change
 	if fX(a)*fX(b) >= 0 {
-		err = errors.New("you have not assumed right a and b\n")
+		err = errors.New("you have not assumed right a and b")
 		return
 	}
 
@@ -30,20 +30,17 @@ func (mtd *BisectionMethod) Run(
 			absoluteError = math.Abs(oldResult - result)
 		}
 
-		fR := fX(result)
-		mtd.interactions = append(mtd.interactions, models.InteractionData[float64]{
-			Interaction:    uint64(totalIteration),
-			InputValues:    []float64{a, b},
-			RelativeError:  absoluteError,
-			FunctionResult: fR,
-			Value:          result,
-		})
+		rootResult := fX(result)
+		mtd.registerInteraction(
+			[]float64{a, b}, totalIteration,
+			absoluteError, rootResult, result,
+		)
 
-		if fR == 0 {
+		if rootResult == 0 {
 			return
 		}
 
-		if fX(a)*fR < 0 {
+		if fX(a)*rootResult < 0 {
 			b = result
 		} else {
 			a = result
@@ -52,9 +49,7 @@ func (mtd *BisectionMethod) Run(
 
 	mtd.finalResult = result
 	if totalIteration >= maxIterations {
-		err = errors.New(
-			"failed to find root after " + strconv.Itoa(int(totalIteration)) + " iterations",
-		)
+		err = mtderrs.ErrMaxIterations(totalIteration)
 	}
 	return
 }
