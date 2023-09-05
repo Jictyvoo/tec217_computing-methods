@@ -25,3 +25,8 @@ func (mtd *commonState[T]) registerInteraction(
 func (mtd commonState[T]) InteractionData() []models.InteractionData[T] {
 	return mtd.interactions
 }
+
+//goland:noinspection GoMixedReceiverTypes
+func (mtd *commonState[T]) Reset() {
+	mtd.interactions = mtd.interactions[:0]
+}

@@ -1,4 +1,4 @@
-package main
+package views
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils/colors"
 )
 
-func reportResult(
+func ReportResult(
 	methodName string, result float64,
 	totalIterations uint32, outTable fmt.Stringer,
 ) {
@@ -26,6 +26,6 @@ func reportResult(
 	)
 }
 
-func reportError(err error) {
+func ReportError(err error) {
 	slog.Error("Failed to find root", slog.String("error", err.Error()))
 }

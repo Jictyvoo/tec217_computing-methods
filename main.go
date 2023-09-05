@@ -10,6 +10,7 @@ import (
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/methods"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
+	"github.com/jictyvoo/tec217_computing-methods/pkg/views"
 )
 
 func quest01Bisection() {
@@ -24,13 +25,13 @@ func quest01Bisection() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("Bisection", result, totalInteractions, &buffer)
+	views.ReportResult("Bisection", result, totalInteractions, &buffer)
 }
 
-func quest02FalsePositive() {
+func quest02FalsePosition() {
 	const (
 		a, b    float64 = 0, 1
 		epsilon         = 5e-4
@@ -47,10 +48,10 @@ func quest02FalsePositive() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("FalsePositive", result, totalInteractions, &buffer)
+	views.ReportResult("FalsePosition", result, totalInteractions, &buffer)
 }
 
 func quest03LinearIteration() {
@@ -73,10 +74,10 @@ func quest03LinearIteration() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("LinearIteration", result, totalInteractions, &buffer)
+	views.ReportResult("LinearIteration", result, totalInteractions, &buffer)
 }
 
 func quest04NewtonRaphson() {
@@ -99,10 +100,10 @@ func quest04NewtonRaphson() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("NewtonRaphson", result, totalInteractions, &buffer)
+	views.ReportResult("NewtonRaphson", result, totalInteractions, &buffer)
 }
 
 func quest05Secant() {
@@ -124,10 +125,10 @@ func quest05Secant() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("Secant", result, totalInteractions, &buffer)
+	views.ReportResult("Secant", result, totalInteractions, &buffer)
 }
 
 func quest06PhysicsMadness() {
@@ -152,10 +153,10 @@ func quest06PhysicsMadness() {
 	)
 
 	if err = errors.Join(err, utils.WriteInteractionAsCSV(&buffer, method.InteractionData())); err != nil {
-		reportError(err)
+		views.ReportError(err)
 		return
 	}
-	reportResult("PhysicsMadness(NewtonRaphson)", result, totalInteractions, &buffer)
+	views.ReportResult("PhysicsMadness(NewtonRaphson)", result, totalInteractions, &buffer)
 
 	{
 		const h = 1e-7 // Step size for finite difference
@@ -193,7 +194,7 @@ func main() {
 		),
 	)
 	quest01Bisection()
-	quest02FalsePositive()
+	quest02FalsePosition()
 	quest03LinearIteration()
 	quest04NewtonRaphson()
 	quest05Secant()
