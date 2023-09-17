@@ -33,6 +33,28 @@ func quest01Gauss() {
 	views.ReportLinearSystemResult("GaussElimination", det, foundRoots, &buffer)
 }
 
+func quest02GaussPivot() {
+	var (
+		buffer strings.Builder
+		method = methods.GaussEliminationMethod[float64]{Addons: methods.AddonPivot}
+	)
+
+	det, foundRoots, err := method.Run(
+		[][]float64{
+			{2, -6, -1, -38},
+			{-3, -1, 7, -34},
+			{-8, 1, -2, -20},
+		},
+	)
+
+	triangulationSteps, rootCalculationSteps := method.InteractionData()
+	if err = errors.Join(err, utils.WriteLinearInteractionAsCSV(&buffer, triangulationSteps, rootCalculationSteps)); err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportLinearSystemResult("GaussElimination", det, foundRoots, &buffer)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -45,4 +67,5 @@ func main() {
 		),
 	)
 	quest01Gauss()
+	quest02GaussPivot()
 }

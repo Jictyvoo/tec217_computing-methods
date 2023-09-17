@@ -2,6 +2,7 @@ package methods
 
 import (
 	"errors"
+	"math"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
@@ -11,11 +12,10 @@ type GaussAddons uint8
 
 const (
 	AddonPivot GaussAddons = 1 << iota
-	AddonRecursiveSubstitution
 )
 
 type GaussEliminationMethod[T models.Numeric] struct {
-	addons GaussAddons
+	Addons GaussAddons
 	commonLinearSystemState[T]
 }
 
@@ -47,6 +47,23 @@ func (mtd *GaussEliminationMethod[T]) determinant(matrix [][]T) (det T) {
 	return
 }
 
+func (mtd *GaussEliminationMethod[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) {
+	// Find the index of the maxValue value in column
+	maxValue := math.Abs(float64(matrix[currentIndex][currentIndex]))
+	swapIndex := currentIndex
+	for index := currentIndex + 1; index < len(matrix); index++ {
+		if abs := math.Abs(float64(matrix[index][lookupColumn])); abs > maxValue {
+			swapIndex = index
+			maxValue = abs
+		}
+	}
+
+	// Swap the current row and the maxValue row if necessary
+	if swapIndex != currentIndex {
+		matrix[swapIndex], matrix[currentIndex] = matrix[currentIndex], matrix[swapIndex]
+	}
+}
+
 func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
 	// Checking if the given matrix is a square
 	if !mtd.isMatrixSquare(inputMatrix) {
@@ -57,10 +74,15 @@ func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots 
 	// Create a copy of input matrix
 	equationsMatrix := utils.DeepCopyBidimensionalSlice(inputMatrix)
 
+	if mtd.Addons&AddonPivot == AddonPivot {
+		mtd.pivot(equationsMatrix, 0, 0)
+	}
+
 	for eqIndex, equation := range equationsMatrix {
 		if eqIndex == len(equationsMatrix)-1 {
 			break
 		}
+
 		// Eliminate the next equations
 		if eqIndex+1 >= len(equation) {
 			continue

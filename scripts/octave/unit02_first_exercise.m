@@ -4,7 +4,7 @@ inputMatrix = [
             1, 1, 6, -21.5
             ];
 
-[det, foundRoots, err] = gaussEliminationMethod(inputMatrix);
+[det, foundRoots, err] = gaussEliminationMethod(inputMatrix, false);
 
 % Report error if the matrix isn't a square one:
 if ~isempty(err)
@@ -24,7 +24,7 @@ inputMatrix = [
             -8, 1, -2, -20
             ];
 
-[det, foundRoots, err] = gaussEliminationMethod(inputMatrix);
+[det, foundRoots, err] = gaussEliminationMethod(inputMatrix, true);
 
 % Report error if the matrix isn't a square one:
 if ~isempty(err)
@@ -33,6 +33,6 @@ if ~isempty(err)
 end
 
 % Report Result:
-fprintf('Method: GaussElimination\n');
+fprintf('Method: GaussElimination with Pivot\n');
 fprintf('Determinant: %d\n', det);
 fprintf('Roots:'), disp(foundRoots);
