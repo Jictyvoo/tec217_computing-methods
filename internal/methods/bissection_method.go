@@ -9,7 +9,7 @@ import (
 )
 
 type BisectionMethod struct {
-	commonState[float64]
+	commonFuncZeroState[float64]
 }
 
 func (mtd *BisectionMethod) Run(

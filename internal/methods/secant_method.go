@@ -8,7 +8,7 @@ import (
 )
 
 type SecantMethod struct {
-	commonState[float64]
+	commonFuncZeroState[float64]
 }
 
 func (mtd *SecantMethod) Run(

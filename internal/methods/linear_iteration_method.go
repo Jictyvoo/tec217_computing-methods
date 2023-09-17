@@ -8,7 +8,7 @@ import (
 )
 
 type LinearIterationMethod struct {
-	commonState[float64]
+	commonFuncZeroState[float64]
 }
 
 func (mtd *LinearIterationMethod) Run(

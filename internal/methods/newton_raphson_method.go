@@ -8,7 +8,7 @@ import (
 )
 
 type NewtonRaphsonMethod struct {
-	commonState[float64]
+	commonFuncZeroState[float64]
 }
 
 func (mtd *NewtonRaphsonMethod) Run(

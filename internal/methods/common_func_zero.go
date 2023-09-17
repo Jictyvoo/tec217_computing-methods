@@ -2,13 +2,13 @@ package methods
 
 import "github.com/jictyvoo/tec217_computing-methods/internal/models"
 
-type commonState[T models.Numeric] struct {
+type commonFuncZeroState[T models.Numeric] struct {
 	finalResult  T
 	interactions []models.InteractionData[T]
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (mtd *commonState[T]) registerInteraction(
+func (mtd *commonFuncZeroState[T]) registerInteraction(
 	inputs []T, totalIteration uint32, relativeError T,
 	rootResult, result T,
 ) {
@@ -22,11 +22,11 @@ func (mtd *commonState[T]) registerInteraction(
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (mtd commonState[T]) InteractionData() []models.InteractionData[T] {
+func (mtd commonFuncZeroState[T]) InteractionData() []models.InteractionData[T] {
 	return mtd.interactions
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (mtd *commonState[T]) Reset() {
+func (mtd *commonFuncZeroState[T]) Reset() {
 	mtd.interactions = mtd.interactions[:0]
 }
