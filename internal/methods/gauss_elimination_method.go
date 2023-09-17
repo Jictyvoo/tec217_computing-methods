@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
+	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
 )
 
 type GaussAddons uint8
@@ -15,9 +16,10 @@ const (
 
 type GaussEliminationMethod[T models.Numeric] struct {
 	addons GaussAddons
+	commonLinearSystemState[T]
 }
 
-func (mtd GaussEliminationMethod[T]) isMatrixSquare(equationsMatrix [][]T) bool {
+func (mtd *GaussEliminationMethod[T]) isMatrixSquare(equationsMatrix [][]T) bool {
 	totalEquations := len(equationsMatrix)
 	for _, equation := range equationsMatrix {
 		// Check size by removing the result element
@@ -28,7 +30,7 @@ func (mtd GaussEliminationMethod[T]) isMatrixSquare(equationsMatrix [][]T) bool 
 	return true
 }
 
-func (mtd GaussEliminationMethod[T]) subtractEquations(factor T, a, b []T) (result []T) {
+func (mtd *GaussEliminationMethod[T]) subtractEquations(factor T, a, b []T) (result []T) {
 	result = make([]T, len(a))
 	for index, value := range b {
 		result[index] = a[index] - value*factor
@@ -36,7 +38,7 @@ func (mtd GaussEliminationMethod[T]) subtractEquations(factor T, a, b []T) (resu
 	return
 }
 
-func (mtd GaussEliminationMethod[T]) determinant(matrix [][]T) (det T) {
+func (mtd *GaussEliminationMethod[T]) determinant(matrix [][]T) (det T) {
 	det = 1
 	for index := 0; index < len(matrix); index++ {
 		det *= matrix[index][index]
@@ -45,20 +47,15 @@ func (mtd GaussEliminationMethod[T]) determinant(matrix [][]T) (det T) {
 	return
 }
 
-func (mtd GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
-	// Checking if the given matrix is a square one
+func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
+	// Checking if the given matrix is a square
 	if !mtd.isMatrixSquare(inputMatrix) {
 		err = errors.New("the given matrix isn't a square one")
 		return
 	}
 
 	// Create a copy of input matrix
-	equationsMatrix := make([][]T, len(inputMatrix))
-	foundRoots = make([]T, len(inputMatrix))
-	for index, equation := range inputMatrix {
-		equationsMatrix[index] = make([]T, len(equation))
-		copy(equationsMatrix[index], equation)
-	}
+	equationsMatrix := utils.DeepCopyBidimensionalSlice(inputMatrix)
 
 	for eqIndex, equation := range equationsMatrix {
 		if eqIndex == len(equationsMatrix)-1 {
@@ -77,6 +74,7 @@ func (mtd GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots [
 			nextEquation = equationsMatrix[index]
 			divisionFactor := nextEquation[eqIndex] / equation[eqIndex]
 			equationsMatrix[index] = mtd.subtractEquations(divisionFactor, nextEquation, equation)
+			mtd.registerTriangulation(equationsMatrix, divisionFactor, uint8(eqIndex), uint8(index))
 		}
 	}
 
@@ -84,21 +82,21 @@ func (mtd GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots [
 	det = mtd.determinant(equationsMatrix)
 
 	// Calculate roots from bottom-up
-	divisionIndex := len(equationsMatrix) - 1
-	targetEquation := equationsMatrix[divisionIndex]
-	// xn ← bn / an,n
-	foundRoots[divisionIndex] = targetEquation[len(targetEquation)-1] / targetEquation[divisionIndex]
-	for eqIndex := divisionIndex - 1; eqIndex >= 0; eqIndex-- {
-		targetEquation = equationsMatrix[eqIndex]
-		// Sum ← bi
+	foundRoots = make([]T, len(inputMatrix))
+	for eqIndex := len(equationsMatrix) - 1; eqIndex >= 0; eqIndex-- {
+		targetEquation := equationsMatrix[eqIndex]
+		// Sum ← b_{i}
 		sum := targetEquation[len(targetEquation)-1]
 		for i := eqIndex + 1; i < len(equationsMatrix); i++ {
-			// Sum ← Sum – ai,j * xj
+			// Sum ← Sum – a_{i,j} * x_{j}
 			sum -= targetEquation[i] * foundRoots[i]
 		}
-		// xi = sum / ai,i
+		// x_{i} = sum / a_{i,i}
 		foundRoots[eqIndex] = sum / targetEquation[eqIndex]
+		mtd.registerRootCalculation(foundRoots, targetEquation[eqIndex], sum)
 	}
 
+	mtd.Determinant = det
+	mtd.Roots = foundRoots
 	return
 }
