@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 	"strings"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/methods"
+	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
 	"github.com/jictyvoo/tec217_computing-methods/pkg/views"
 )
 
@@ -15,18 +17,20 @@ func quest01Gauss() {
 		method = methods.GaussEliminationMethod[float64]{}
 	)
 
-	det, _, err := method.Run(
+	det, foundRoots, err := method.Run(
 		[][]float64{
 			{10, 2, -1, 27},
 			{-3, -5, 2, -61.5},
 			{1, 1, 6, -21.5},
 		},
 	)
-	if err != nil {
+
+	triangulationSteps, rootCalculationSteps := method.InteractionData()
+	if err = errors.Join(err, utils.WriteLinearInteractionAsCSV(&buffer, triangulationSteps, rootCalculationSteps)); err != nil {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("GaussElimination", det, 0, &buffer)
+	views.ReportLinearSystemResult("GaussElimination", det, foundRoots, &buffer)
 }
 
 func main() {
