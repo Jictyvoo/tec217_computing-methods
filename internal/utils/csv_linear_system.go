@@ -51,7 +51,7 @@ func writeRootCalculationStep(
 	writer *csv.Writer, rootCalculationSteps []models.RootCalculationStep[float64],
 ) (err error) {
 	// Write column headers for root calculation steps
-	rootCalculationHeaders := []string{"Step", "Roots", "DivisorSum", "Dividend", "Added Root"}
+	rootCalculationHeaders := []string{"Step", "Roots", "DividendSum", "Divisor", "Added Root"}
 	if err = writer.Write(rootCalculationHeaders); err != nil {
 		return
 	}
@@ -63,8 +63,8 @@ func writeRootCalculationStep(
 		record := []string{
 			strconv.Itoa(index + 1),
 			rootsStr,
-			strconv.FormatFloat(step.DivisorSum, 'f', 6, 64),
-			strconv.FormatFloat(step.Dividend, 'f', 6, 64),
+			strconv.FormatFloat(step.DividendSum, 'f', 6, 64),
+			strconv.FormatFloat(step.Divisor, 'f', 6, 64),
 			strconv.FormatFloat(step.Roots[totalSteps-index], 'f', 6, 64),
 		}
 		if err = writer.Write(record); err != nil {

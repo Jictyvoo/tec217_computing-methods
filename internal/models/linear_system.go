@@ -8,7 +8,7 @@ type TriangulationStep[T Numeric] struct {
 }
 
 type RootCalculationStep[T Numeric] struct {
-	Roots      []T // The roots after this step
-	DivisorSum T   // The sum of all elements to later be used to divide
-	Dividend   T   // The value that will be divided
+	Roots       []T // The roots after this step
+	DividendSum T   // The sum of all elements to later be used to divide
+	Divisor     T   // The value that will be divided
 }

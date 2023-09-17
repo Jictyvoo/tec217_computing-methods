@@ -29,9 +29,9 @@ func (mtd *commonLinearSystemState[T]) registerRootCalculation(
 	calculatedRoots []T, dividend, divisorSum T,
 ) {
 	mtd.rootCalculationSteps = append(mtd.rootCalculationSteps, models.RootCalculationStep[T]{
-		Roots:      utils.CloneSlice(calculatedRoots),
-		DivisorSum: divisorSum,
-		Dividend:   dividend,
+		Roots:       utils.CloneSlice(calculatedRoots),
+		DividendSum: divisorSum,
+		Divisor:     dividend,
 	})
 }
 
