@@ -4,8 +4,10 @@
 > 44036-900 - Feira de Santana - BA - Brasil
 
 ## Questão 01
+
 Encontre a primeira raiz não trivial da função a seguir usando um método gráfico e o método da bissecção com intervalo inicial de 0,5 a 1 (obs.: x está em radianos).
 Realize duas iterações à mão, em seguida faça os cálculos através do algoritmo até que Ea seja menor que Es = 2%.
+
 $$
 \begin{align}
 f(x) = sen(x) - x^2
@@ -13,15 +15,20 @@ f(x) = sen(x) - x^2
 $$
 
 ### Realizando o método gráfico
+
 ![[01.quest_01.png]]
+
 ### Iterações Manuais:
 
 #### **Iteração 1:**
+
 - Intervalo: \(a = 0.5\), \(b = 1.0\)
 - Encontrar o ponto médio: \(x = (a + b) / 2 = 0.75\)
 - Avaliar a função: \(f(0.75) = \sin(0.75) - 0.75^2 \approx 0.119139\)
 - Absolute Error: \(|0.75 - 0.5| = 0.25\)
+
 #### **Iteração 2:**
+
 - Intervalo: \(a = 0.75\), \(b = 1.0\)
 - Encontrar o ponto médio: \(x = (a + b) / 2 = 0.875\)
 - Avaliar a função: \(f(0.875) = \sin(0.875) - 0.875^2 \approx 0.001919\)
@@ -90,21 +97,22 @@ else
 end
 ```
 
-
 ### Resultados
+
 Abaixo se encontra a tabela referente à saída do programa com a utilização do método da bisseção.
 
-| Interaction |     a    |     b    |  Found-X |    f(x)   | Absolute-Error |
-|:-----------:|:--------:|:--------:|:--------:|:---------:|:--------------:|
-|      1      | 0.500000 | 1.000000 | 0.750000 |  0.119139 |    1.000000    |
-|      2      | 0.750000 | 1.000000 | 0.875000 |  0.001919 |    0.125000    |
+| Interaction |    a     |    b     | Found-X  |   f(x)    | Absolute-Error |
+| :---------: | :------: | :------: | :------: | :-------: | :------------: |
+|      1      | 0.500000 | 1.000000 | 0.750000 | 0.119139  |    1.000000    |
+|      2      | 0.750000 | 1.000000 | 0.875000 | 0.001919  |    0.125000    |
 |      3      | 0.875000 | 1.000000 | 0.937500 | -0.072825 |    0.062500    |
 |      4      | 0.875000 | 0.937500 | 0.906250 | -0.034092 |    0.031250    |
 |      5      | 0.875000 | 0.906250 | 0.890625 | -0.015748 |    0.015625    |
 
-
 ## Questão 02
-Aplique o método da falsa posição na função abaixo no intervalo \[0,1\] considerando Es = 5*10^-4
+
+Aplique o método da falsa posição na função abaixo no intervalo \[0,1\] considerando Es = 5\*10^-4
+
 $$
 \begin{align}
 f(x) = x^3 - 9x + 3
@@ -112,7 +120,9 @@ f(x) = x^3 - 9x + 3
 $$
 
 ### Realizando o método gráfico
+
 ![[01.quest_02.png]]
+
 ### Iterações Manuais:
 
 Para realizar os calculos, será utilizada a seguinte fórmula:
@@ -120,7 +130,9 @@ Para realizar os calculos, será utilizada a seguinte fórmula:
 $$
 r = b - \frac{f(b) \cdot (a - b)}{f(a) - f(b)}
 $$
+
 Pontos Iniciais: 0 e 1
+
 #### **Iteração 1:**
 
 $$
@@ -137,8 +149,11 @@ Agora, calcula-se o próximo ponto:
 $$
 x_{\text{next}} = 1 - \frac{-5 \cdot (1 - 0)}{-5 - 3} = 1 - \frac{5}{8} = \frac{3}{8} = 0.375
 $$
+
 ---
+
 #### **Iteração 2:**
+
 $$
 \begin{align}
 &a = 0; b = 0.375 \\
@@ -147,11 +162,13 @@ f(a) = f(0) = 0^3 - 9 \cdot 0 + 3 = 3 \\
 f(b) = f(0.375) = 0.375^3 - 9 \cdot 0.375 + 3 = -0.322265625 \\
 \end{align}
 $$
+
 Agora, calcula-se o próximo ponto:
 
 $$
 x_{\text{next}} = 0.375 - \frac{-0.322265625 \cdot (0.375 - 0)}{-0.322265625 - 3} \approx \frac{64}{189} \approx 0.338624
 $$
+
 ### Algoritmo de Falso Positivo:
 
 A implementação do algoritmo solicitado se encontra abaixo:
@@ -227,10 +244,11 @@ end
 ```
 
 ### Resultados
+
 Abaixo se encontra a tabela referente à saída do programa com a utilização do método da bisseção.
 
-| Interaction |     a    |     b    |  Found-X |    f(x)   | Absolute-Error |
-|:-----------:|:--------:|:--------:|:--------:|:---------:|:--------------:|
+| Interaction |    a     |    b     | Found-X  |   f(x)    | Absolute-Error |
+| :---------: | :------: | :------: | :------: | :-------: | :------------: |
 |      1      | 0.000000 | 1.000000 | 0.375000 | -0.322266 |    1.000000    |
 |      2      | 0.000000 | 0.375000 | 0.338624 | -0.008790 |    0.036376    |
 |      3      | 0.000000 | 0.338624 | 0.337635 | -0.000226 |    0.000989    |
