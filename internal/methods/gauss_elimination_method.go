@@ -19,34 +19,6 @@ type GaussEliminationMethod[T models.Numeric] struct {
 	commonLinearSystemState[T]
 }
 
-func (mtd *GaussEliminationMethod[T]) isMatrixSquare(equationsMatrix [][]T) bool {
-	totalEquations := len(equationsMatrix)
-	for _, equation := range equationsMatrix {
-		// Check size by removing the result element
-		if len(equation)-1 != totalEquations {
-			return false
-		}
-	}
-	return true
-}
-
-func (mtd *GaussEliminationMethod[T]) subtractEquations(factor T, a, b []T) (result []T) {
-	result = make([]T, len(a))
-	for index, value := range b {
-		result[index] = a[index] - value*factor
-	}
-	return
-}
-
-func (mtd *GaussEliminationMethod[T]) determinant(matrix [][]T) (det T) {
-	det = 1
-	for index := 0; index < len(matrix); index++ {
-		det *= matrix[index][index]
-	}
-
-	return
-}
-
 func (mtd *GaussEliminationMethod[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) {
 	// Find the index of the maxValue value in column
 	maxValue := math.Abs(float64(matrix[currentIndex][currentIndex]))
