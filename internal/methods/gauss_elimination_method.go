@@ -2,7 +2,6 @@ package methods
 
 import (
 	"errors"
-	"math"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
@@ -16,24 +15,9 @@ const (
 
 type GaussEliminationMethod[T models.Numeric] struct {
 	Addons GaussAddons
+
+	matrixHelper[T]
 	commonLinearSystemState[T]
-}
-
-func (mtd *GaussEliminationMethod[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) {
-	// Find the index of the maxValue value in column
-	maxValue := math.Abs(float64(matrix[currentIndex][currentIndex]))
-	swapIndex := currentIndex
-	for index := currentIndex + 1; index < len(matrix); index++ {
-		if abs := math.Abs(float64(matrix[index][lookupColumn])); abs > maxValue {
-			swapIndex = index
-			maxValue = abs
-		}
-	}
-
-	// Swap the current row and the maxValue row if necessary
-	if swapIndex != currentIndex {
-		matrix[swapIndex], matrix[currentIndex] = matrix[currentIndex], matrix[swapIndex]
-	}
 }
 
 func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
