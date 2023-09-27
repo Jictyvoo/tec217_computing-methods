@@ -9,14 +9,17 @@ import (
 
 type matrixHelper[T models.Numeric] struct{}
 
-func (mtd matrixHelper[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) {
+func (mtd matrixHelper[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) (pivotElement T) {
 	// Find the index of the maxValue value in column
-	maxValue := math.Abs(float64(matrix[currentIndex][currentIndex]))
+	pivotElement = matrix[currentIndex][currentIndex]
+	maxValue := math.Abs(float64(pivotElement))
 	swapIndex := currentIndex
 	for index := currentIndex + 1; index < len(matrix); index++ {
-		if abs := math.Abs(float64(matrix[index][lookupColumn])); abs > maxValue {
+		element := matrix[index][lookupColumn]
+		if abs := math.Abs(float64(element)); abs > maxValue {
 			swapIndex = index
 			maxValue = abs
+			pivotElement = element
 		}
 	}
 
@@ -24,12 +27,24 @@ func (mtd matrixHelper[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) {
 	if swapIndex != currentIndex {
 		matrix[swapIndex], matrix[currentIndex] = matrix[currentIndex], matrix[swapIndex]
 	}
+
+	return
 }
 
 func (mtd matrixHelper[T]) determinant(matrix [][]T) (det T) {
 	det = 1
 	for index := 0; index < len(matrix); index++ {
 		det *= matrix[index][index]
+	}
+
+	return
+}
+
+func (mtd matrixHelper[T]) makeIdentity(size uint8) (identity [][]T) {
+	identity = make([][]T, size)
+	for index := uint8(0); index < size; index++ {
+		identity[index] = make([]T, size)
+		identity[index][index] = 1
 	}
 
 	return

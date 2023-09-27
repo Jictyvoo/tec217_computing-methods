@@ -2,6 +2,7 @@ package methods
 
 import (
 	"errors"
+	"slices"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
@@ -10,6 +11,11 @@ import (
 type GaussJordanMethod[T models.Numeric] struct {
 	matrixHelper[T]
 	commonLinearSystemState[T]
+	inverseMatrix [][]T
+}
+
+func (mtd *GaussJordanMethod[T]) Inverse() [][]T {
+	return mtd.inverseMatrix
 }
 
 func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
@@ -21,9 +27,17 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 
 	// Create a copy of input matrix
 	equationsMatrix := utils.DeepCopyBidimensionalSlice(inputMatrix)
+	matrixSize := len(equationsMatrix)
 
-	for eqIndex := 0; eqIndex < len(equationsMatrix); eqIndex += 1 {
-		mtd.pivot(equationsMatrix, eqIndex, eqIndex)
+	// Insert identity matrix between the result and original matrix
+	identity := mtd.makeIdentity(uint8(matrixSize))
+	for index, idEq := range identity {
+		equationsMatrix[index] = slices.Insert(equationsMatrix[index], matrixSize, idEq...)
+	}
+
+	det = 1
+	for eqIndex := 0; eqIndex < matrixSize; eqIndex += 1 {
+		det *= mtd.pivot(equationsMatrix, eqIndex, eqIndex) // keep updating determinant
 		{
 			equation := equationsMatrix[eqIndex]
 			pivotElement := equation[eqIndex]
@@ -39,7 +53,7 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 			}
 		}
 
-		for index := 0; index < len(equationsMatrix); index++ {
+		for index := 0; index < matrixSize; index++ {
 			if index != eqIndex {
 				equation := equationsMatrix[index]
 				factor := equation[eqIndex]
@@ -47,14 +61,22 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 					factor, equation,
 					equationsMatrix[eqIndex],
 				)
-				mtd.registerTriangulation(equationsMatrix, -factor, uint8(eqIndex), uint8(index))
+				mtd.registerTriangulation(equationsMatrix, factor, uint8(eqIndex), uint8(index))
 			}
 		}
 	}
 
-	foundRoots = make([]T, len(equationsMatrix))
-	for i, equation := range equationsMatrix {
-		foundRoots[i] = equation[len(equation)-1]
+	foundRoots = make([]T, matrixSize)
+	for index, equation := range equationsMatrix {
+		foundRoots[index] = equation[len(equation)-1]
 	}
+
+	mtd.inverseMatrix = make([][]T, matrixSize)
+	for index, equation := range equationsMatrix {
+		mtd.inverseMatrix[index] = equation[matrixSize : matrixSize*2]
+	}
+
+	mtd.Determinant = det
+	mtd.Roots = foundRoots
 	return
 }
