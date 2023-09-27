@@ -52,7 +52,12 @@ func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots 
 			nextEquation = equationsMatrix[index]
 			divisionFactor := nextEquation[eqIndex] / equation[eqIndex]
 			equationsMatrix[index] = mtd.subtractEquations(divisionFactor, nextEquation, equation)
-			mtd.registerTriangulation(equationsMatrix, divisionFactor, uint8(eqIndex), uint8(index))
+			mtd.registerMatrixTransformation(
+				equationsMatrix,
+				divisionFactor,
+				uint8(eqIndex),
+				uint8(index),
+			)
 		}
 	}
 

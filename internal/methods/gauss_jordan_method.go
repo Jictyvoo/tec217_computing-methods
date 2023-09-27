@@ -37,14 +37,17 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 
 	det = 1
 	for eqIndex := 0; eqIndex < matrixSize; eqIndex += 1 {
-		det *= mtd.pivot(equationsMatrix, eqIndex, eqIndex) // keep updating determinant
+		pivotElement := mtd.pivot(equationsMatrix, eqIndex, eqIndex) // keep updating determinant
+		det *= pivotElement
 		{
 			equation := equationsMatrix[eqIndex]
-			pivotElement := equation[eqIndex]
 			equationsMatrix[eqIndex] = mtd.execOnEquation(
 				equation, func(value T) T {
 					return value / pivotElement
 				},
+			)
+			mtd.registerMatrixTransformation(
+				equationsMatrix, pivotElement, uint8(eqIndex), uint8(eqIndex), models.OpDiv,
 			)
 
 			// Eliminate the next equations
@@ -61,7 +64,10 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 					factor, equation,
 					equationsMatrix[eqIndex],
 				)
-				mtd.registerTriangulation(equationsMatrix, factor, uint8(eqIndex), uint8(index))
+				mtd.registerMatrixTransformation(
+					equationsMatrix, factor,
+					uint8(eqIndex), uint8(index),
+				)
 			}
 		}
 	}

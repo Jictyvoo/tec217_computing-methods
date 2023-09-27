@@ -78,7 +78,7 @@ func (mtd matrixHelper[T]) subtractEquations(factor T, a, b []T) (result []T) {
 }
 
 type commonLinearSystemState[T models.Numeric] struct {
-	triangulationSteps   []models.TriangulationStep[T]
+	transformationSteps  []models.MatrixTransformationStep[T]
 	rootCalculationSteps []models.RootCalculationStep[T]
 	Determinant          T
 	Roots                []T
@@ -86,14 +86,21 @@ type commonLinearSystemState[T models.Numeric] struct {
 
 //goland:noinspection GoMixedReceiverTypes
 
-func (mtd *commonLinearSystemState[T]) registerTriangulation(
-	inputMatrix [][]T, multiplier T, subtractionRow, destinationRow uint8,
+func (mtd *commonLinearSystemState[T]) registerMatrixTransformation(
+	inputMatrix [][]T, multiplier T,
+	subtractionRow, destinationRow uint8,
+	operationOpt ...models.AlgebraicOperation,
 ) {
-	mtd.triangulationSteps = append(mtd.triangulationSteps, models.TriangulationStep[T]{
-		Matrix:         utils.DeepCopyBidimensionalSlice(inputMatrix),
-		Multiplier:     multiplier,
-		SubtractionRow: subtractionRow,
-		SubtractedRow:  destinationRow,
+	operation := models.OpSub
+	if len(operationOpt) > 0 {
+		operation = operationOpt[0]
+	}
+	mtd.transformationSteps = append(mtd.transformationSteps, models.MatrixTransformationStep[T]{
+		Matrix:     utils.DeepCopyBidimensionalSlice(inputMatrix),
+		Multiplier: multiplier,
+		Operation:  operation,
+		RightRow:   subtractionRow,
+		LeftRow:    destinationRow,
 	})
 }
 
@@ -111,13 +118,13 @@ func (mtd *commonLinearSystemState[T]) registerRootCalculation(
 
 //goland:noinspection GoMixedReceiverTypes
 
-func (mtd commonLinearSystemState[T]) InteractionData() ([]models.TriangulationStep[T], []models.RootCalculationStep[T]) {
-	return mtd.triangulationSteps, mtd.rootCalculationSteps
+func (mtd commonLinearSystemState[T]) InteractionData() ([]models.MatrixTransformationStep[T], []models.RootCalculationStep[T]) {
+	return mtd.transformationSteps, mtd.rootCalculationSteps
 }
 
 //goland:noinspection GoMixedReceiverTypes
 
 func (mtd *commonLinearSystemState[T]) Reset() {
-	mtd.triangulationSteps = mtd.triangulationSteps[:0]
+	mtd.transformationSteps = mtd.transformationSteps[:0]
 	mtd.rootCalculationSteps = mtd.rootCalculationSteps[:0]
 }

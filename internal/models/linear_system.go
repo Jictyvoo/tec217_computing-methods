@@ -1,10 +1,11 @@
 package models
 
-type TriangulationStep[T Numeric] struct {
-	Matrix         [][]T // The state of the matrix after this step
-	Multiplier     T     // The multiplier used in this step
-	SubtractionRow uint8 // The row that has been subtracted
-	SubtractedRow  uint8 // The row that has been used for subtraction
+type MatrixTransformationStep[T Numeric] struct {
+	Matrix     [][]T              // The state of the matrix after this step
+	Multiplier T                  // The multiplier used in this step
+	RightRow   uint8              // The row that has been subtracted
+	LeftRow    uint8              // The row that has been used for subtraction
+	Operation  AlgebraicOperation // The row that defines which operation was made with
 }
 
 type RootCalculationStep[T Numeric] struct {

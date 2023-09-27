@@ -10,8 +10,29 @@ import (
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 )
 
+func formatLinearOpLabel(
+	operation models.AlgebraicOperation,
+	multiplier float64, leftRow, rightRow uint8,
+) string {
+	switch operation {
+	case models.OpSum, models.OpSub:
+		return fmt.Sprintf(
+			"L%d = L%d %s (%.4f * L%d)",
+			leftRow, leftRow, string(operation),
+			multiplier, rightRow,
+		)
+	case models.OpMult, models.OpDiv:
+		return fmt.Sprintf(
+			"L%d = L%d %s %.4f",
+			leftRow, leftRow, string(operation), multiplier,
+		)
+	}
+
+	return "Failed to recognize operation"
+}
+
 func writeTriangulationSteps(
-	writer *csv.Writer, triangulationSteps []models.TriangulationStep[float64],
+	writer *csv.Writer, triangulationSteps []models.MatrixTransformationStep[float64],
 ) (err error) {
 	if len(triangulationSteps) <= 0 {
 		err = errors.New("can't write a CSV without any data")
@@ -33,10 +54,9 @@ func writeTriangulationSteps(
 			strconv.Itoa(i + 1),
 			matrixStr,
 			strconv.FormatFloat(step.Multiplier, 'f', 6, 64),
-			fmt.Sprintf(
-				"L%d = L%d - (%.4f * L%d)",
-				step.SubtractedRow+1, step.SubtractedRow+1,
-				step.Multiplier, step.SubtractionRow+1,
+			formatLinearOpLabel(
+				step.Operation, step.Multiplier,
+				step.LeftRow+1, step.RightRow+1,
 			),
 		}
 		if err = writer.Write(record); err != nil {
@@ -77,7 +97,7 @@ func writeRootCalculationStep(
 
 func WriteLinearInteractionAsCSV(
 	output io.Writer,
-	triangulationSteps []models.TriangulationStep[float64],
+	triangulationSteps []models.MatrixTransformationStep[float64],
 	rootCalculationSteps []models.RootCalculationStep[float64],
 ) (err error) {
 	writer := csv.NewWriter(output)
