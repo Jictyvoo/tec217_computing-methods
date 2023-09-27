@@ -45,3 +45,8 @@ func ReportLinearSystemResult(
 		slog.String("output-table", outTable.String()),
 	)
 }
+
+func ReportMatrixTable(tableName string, outputTable fmt.Stringer) {
+	fmt.Println(colors.Cyan(tableName))
+	slog.Info(outputTable.String())
+}

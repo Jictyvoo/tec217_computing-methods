@@ -55,6 +55,35 @@ func quest02GaussPivot() {
 	views.ReportLinearSystemResult("GaussElimination", det, foundRoots, &buffer)
 }
 
+func quest03GaussJordan() {
+	var (
+		buffer, inverseMatrix strings.Builder
+		method                = methods.GaussJordanMethod[float64]{}
+	)
+
+	det, foundRoots, err := method.Run(
+		[][]float64{
+			{-0.04, 0.04, 0.12, 3},
+			{0.56, -1.56, 0.32, 1},
+			{-0.24, 1.24, -0.28, 0},
+		},
+	)
+
+	triangulationSteps, rootCalculationSteps := method.InteractionData()
+	err = errors.Join(
+		err,
+		utils.WriteLinearInteractionAsCSV(&buffer, triangulationSteps, rootCalculationSteps),
+		views.MatrixTableCSV(method.Inverse(), &inverseMatrix),
+	)
+
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportLinearSystemResult("GaussJordan", det, foundRoots, &buffer)
+	views.ReportMatrixTable("Inverse", &inverseMatrix)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -68,4 +97,5 @@ func main() {
 	)
 	quest01Gauss()
 	quest02GaussPivot()
+	quest03GaussJordan()
 }
