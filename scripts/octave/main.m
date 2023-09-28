@@ -1,3 +1,6 @@
+addpath('./methods')
+
+%%%%%%%%%%% Start code execution %%%%%%%%%%%
 % Define the function
 fX = @(x)(x^3 - 9 * x + 3);
 

@@ -1,3 +1,6 @@
+addpath('./methods')
+
+%%%%%%%%%%% Start code execution %%%%%%%%%%%
 % Define all constants that will be used
 Pumax = 80000;
 ku = 0.05;

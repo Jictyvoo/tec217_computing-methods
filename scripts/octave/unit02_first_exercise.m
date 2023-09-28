@@ -1,3 +1,6 @@
+addpath('./methods')
+
+%%%%%%%%%%% Start code execution %%%%%%%%%%%
 inputMatrix = [
             10, 2, -1, 27;
             -3, -5, 2, -61.5;

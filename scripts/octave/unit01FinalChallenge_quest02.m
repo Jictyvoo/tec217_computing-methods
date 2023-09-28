@@ -1,3 +1,6 @@
+addpath('./methods')
+
+%%%%%%%%%%% Start code execution %%%%%%%%%%%
 % Define all constants that will be used
 e0 = 8.9e-12;
 F = 1.25;
