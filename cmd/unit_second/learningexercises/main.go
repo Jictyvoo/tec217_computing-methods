@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"log/slog"
 	"os"
 	"strings"
@@ -84,6 +85,43 @@ func quest03GaussJordan() {
 	views.ReportMatrixTable("Inverse", &inverseMatrix)
 }
 
+func quest04LUDecomposition() {
+	var (
+		lBuffer, uBuffer strings.Builder
+		method           = methods.LUDecompositionMethod[float64]{}
+	)
+
+	x, y, err := method.Run(
+		[][]float64{
+			{2, 1, -1, 3},
+			{-1, 3, 2, 1},
+			{3, 1, -3, 2},
+			/*{2, 3, -4, 4, -1},
+			{-4, -7, 11, -6, 5},
+			{6, 11, -20, 10, -13},
+			{-2, -7, 22, -6, 25},*/
+		},
+	)
+
+	// triangulationSteps, rootCalculationSteps := method.InteractionData()
+	err = errors.Join(
+		err,
+		// utils.WriteLinearInteractionAsCSV(&buffer, triangulationSteps, rootCalculationSteps),
+		views.MatrixTableCSV(method.L(), &lBuffer),
+		views.MatrixTableCSV(method.U(), &uBuffer),
+	)
+
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+
+	log.Println(x, y)
+
+	views.ReportMatrixTable("L", &lBuffer)
+	views.ReportMatrixTable("U", &uBuffer)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -98,4 +136,5 @@ func main() {
 	quest01Gauss()
 	quest02GaussPivot()
 	quest03GaussJordan()
+	quest04LUDecomposition()
 }
