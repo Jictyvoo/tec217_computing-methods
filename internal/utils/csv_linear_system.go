@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -12,22 +13,24 @@ import (
 
 func formatLinearOpLabel(
 	operation models.AlgebraicOperation,
-	multiplier float64, leftRow, rightRow uint8,
+	inputElement float64, leftRow, rightRow uint8,
 ) string {
 	switch operation {
 	case models.OpSum, models.OpSub:
 		return fmt.Sprintf(
 			"L%d = L%d %s (%.4f * L%d)",
 			leftRow, leftRow, string(operation),
-			multiplier, rightRow,
+			inputElement, rightRow,
 		)
 	case models.OpMult, models.OpDiv:
 		return fmt.Sprintf(
 			"L%d = L%d %s %.4f",
-			leftRow, leftRow, string(operation), multiplier,
+			leftRow, leftRow, string(operation), inputElement,
 		)
 	case models.OpPermut:
 		return fmt.Sprintf("L%d <=> L%d", leftRow, rightRow)
+	case models.OpAttribution:
+		return fmt.Sprintf("L[%d,%d] = %.4f", leftRow, rightRow, inputElement)
 	}
 
 	return "Failed to recognize operation"
@@ -51,10 +54,10 @@ func writeTriangulationSteps(
 
 	// Write each triangulation step
 	for i, step := range triangulationSteps {
-		matrixStr := fmt.Sprintf("%v", step.Matrix)
+		matrixBytes, _ := json.Marshal(step.Matrix)
 		record := []string{
 			strconv.Itoa(i + 1),
-			matrixStr,
+			string(matrixBytes),
 			strconv.FormatFloat(step.Multiplier, 'f', 6, 64),
 			formatLinearOpLabel(
 				step.Operation, step.Multiplier,
@@ -81,10 +84,10 @@ func writeRootCalculationStep(
 	// Write each root calculation step
 	totalSteps := len(rootCalculationSteps) - 1
 	for index, step := range rootCalculationSteps {
-		rootsStr := fmt.Sprintf("%v", step.Roots)
+		rootsBytes, _ := json.Marshal(step.Roots)
 		record := []string{
 			strconv.Itoa(index + 1),
-			rootsStr,
+			string(rootsBytes),
 			strconv.FormatFloat(step.DividendSum, 'f', 6, 64),
 			strconv.FormatFloat(step.Divisor, 'f', 6, 64),
 			strconv.FormatFloat(step.Roots[totalSteps-index], 'f', 6, 64),
