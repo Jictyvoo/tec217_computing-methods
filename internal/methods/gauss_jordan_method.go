@@ -37,7 +37,15 @@ func (mtd *GaussJordanMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, 
 
 	det = 1
 	for eqIndex := 0; eqIndex < matrixSize; eqIndex += 1 {
-		pivotElement := mtd.pivot(equationsMatrix, eqIndex, eqIndex) // keep updating determinant
+		pivotElement, swapIndexes := mtd.pivot(equationsMatrix, eqIndex, eqIndex)
+		{
+			// Register step before swapping the lines
+			mtd.registerMatrixTransformation(
+				equationsMatrix, 0, uint8(swapIndexes[0]), uint8(swapIndexes[1]), models.OpPermut,
+			)
+			mtd.swapMatrixLines(equationsMatrix, swapIndexes)
+		}
+		// keep updating determinant
 		det *= pivotElement
 		{
 			equation := equationsMatrix[eqIndex]

@@ -9,7 +9,18 @@ import (
 
 type matrixHelper[T models.Numeric] struct{}
 
-func (mtd matrixHelper[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) (pivotElement T) {
+func (mtd matrixHelper[T]) swapMatrixLines(matrix [][]T, indexes [2]uint32) {
+	// Swap the current row and the maxValue row if necessary
+	if indexes[0] != indexes[1] {
+		matrix[indexes[0]], matrix[indexes[1]] = matrix[indexes[1]], matrix[indexes[0]]
+	}
+
+	return
+}
+
+func (mtd matrixHelper[T]) pivot(
+	matrix [][]T, currentIndex, lookupColumn int,
+) (pivotElement T, swapIndexes [2]uint32) {
 	// Find the index of the maxValue value in column
 	pivotElement = matrix[currentIndex][currentIndex]
 	maxValue := math.Abs(float64(pivotElement))
@@ -23,11 +34,7 @@ func (mtd matrixHelper[T]) pivot(matrix [][]T, currentIndex, lookupColumn int) (
 		}
 	}
 
-	// Swap the current row and the maxValue row if necessary
-	if swapIndex != currentIndex {
-		matrix[swapIndex], matrix[currentIndex] = matrix[currentIndex], matrix[swapIndex]
-	}
-
+	swapIndexes = [2]uint32{uint32(swapIndex), uint32(currentIndex)}
 	return
 }
 

@@ -26,6 +26,8 @@ func formatLinearOpLabel(
 			"L%d = L%d %s %.4f",
 			leftRow, leftRow, string(operation), multiplier,
 		)
+	case models.OpPermut:
+		return fmt.Sprintf("L%d <=> L%d", leftRow, rightRow)
 	}
 
 	return "Failed to recognize operation"

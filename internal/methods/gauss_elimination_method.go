@@ -31,7 +31,8 @@ func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots 
 	equationsMatrix := utils.DeepCopyBidimensionalSlice(inputMatrix)
 
 	if mtd.Addons&AddonPivot == AddonPivot {
-		mtd.pivot(equationsMatrix, 0, 0)
+		_, swapIndexes := mtd.pivot(equationsMatrix, 0, 0)
+		mtd.swapMatrixLines(equationsMatrix, swapIndexes)
 	}
 
 	for eqIndex, equation := range equationsMatrix {

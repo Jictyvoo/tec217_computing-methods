@@ -9,8 +9,9 @@ type Numeric interface {
 type AlgebraicOperation rune
 
 const (
-	OpSum  AlgebraicOperation = '+'
-	OpSub  AlgebraicOperation = '-'
-	OpMult AlgebraicOperation = '*'
-	OpDiv  AlgebraicOperation = '/'
+	OpSum    AlgebraicOperation = '+'
+	OpSub    AlgebraicOperation = '-'
+	OpMult   AlgebraicOperation = '*'
+	OpDiv    AlgebraicOperation = '/'
+	OpPermut AlgebraicOperation = '`'
 )
