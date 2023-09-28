@@ -14,7 +14,8 @@ const (
 )
 
 type GaussEliminationMethod[T models.Numeric] struct {
-	Addons GaussAddons
+	Addons      GaussAddons
+	Determinant T
 
 	matrixHelper[T]
 	commonLinearSystemState[T]

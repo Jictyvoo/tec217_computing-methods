@@ -9,9 +9,11 @@ import (
 )
 
 type GaussJordanMethod[T models.Numeric] struct {
+	Determinant   T
+	inverseMatrix [][]T
+
 	matrixHelper[T]
 	commonLinearSystemState[T]
-	inverseMatrix [][]T
 }
 
 func (mtd *GaussJordanMethod[T]) Inverse() [][]T {

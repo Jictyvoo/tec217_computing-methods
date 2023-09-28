@@ -87,7 +87,6 @@ func (mtd matrixHelper[T]) subtractEquations(factor T, a, b []T) (result []T) {
 type commonLinearSystemState[T models.Numeric] struct {
 	transformationSteps  []models.MatrixTransformationStep[T]
 	rootCalculationSteps []models.RootCalculationStep[T]
-	Determinant          T
 	Roots                []T
 }
 
