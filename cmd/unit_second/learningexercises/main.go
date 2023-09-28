@@ -2,12 +2,12 @@ package main
 
 import (
 	"errors"
-	"log"
 	"log/slog"
 	"os"
 	"strings"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/methods"
+	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
 	"github.com/jictyvoo/tec217_computing-methods/pkg/views"
 )
@@ -87,11 +87,11 @@ func quest03GaussJordan() {
 
 func quest04LUDecomposition() {
 	var (
-		lBuffer, uBuffer strings.Builder
-		method           = methods.LUDecompositionMethod[float64]{}
+		buffer, lBuffer, uBuffer strings.Builder
+		method                   = methods.LUDecompositionMethod[float64]{}
 	)
 
-	x, y, err := method.Run(
+	det, foundRoots, err := method.Run(
 		[][]float64{
 			{2, 1, -1, 3},
 			{-1, 3, 2, 1},
@@ -103,10 +103,18 @@ func quest04LUDecomposition() {
 		},
 	)
 
-	// triangulationSteps, rootCalculationSteps := method.InteractionData()
+	var steps struct {
+		L, U struct {
+			triangulation   []models.MatrixTransformationStep[float64]
+			rootCalculation []models.RootCalculationStep[float64]
+		}
+	}
+	steps.L.triangulation, steps.L.rootCalculation = method.LInteractionData()
+	steps.U.triangulation, steps.U.rootCalculation = method.UInteractionData()
 	err = errors.Join(
 		err,
-		// utils.WriteLinearInteractionAsCSV(&buffer, triangulationSteps, rootCalculationSteps),
+		utils.WriteLinearInteractionAsCSV(&buffer, steps.L.triangulation, steps.L.rootCalculation),
+		utils.WriteLinearInteractionAsCSV(&buffer, steps.U.triangulation, steps.U.rootCalculation),
 		views.MatrixTableCSV(method.L(), &lBuffer),
 		views.MatrixTableCSV(method.U(), &uBuffer),
 	)
@@ -116,8 +124,7 @@ func quest04LUDecomposition() {
 		return
 	}
 
-	log.Println(x, y)
-
+	views.ReportLinearSystemResult("LU-Decomposition", det, foundRoots, &buffer)
 	views.ReportMatrixTable("L", &lBuffer)
 	views.ReportMatrixTable("U", &uBuffer)
 }

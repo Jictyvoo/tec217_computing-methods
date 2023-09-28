@@ -8,10 +8,12 @@ import (
 )
 
 type LUDecompositionMethod[T models.Numeric] struct {
+	Determinant T
+	lMatrix     [][]T
+	uMatrix     [][]T
+
 	matrixHelper[T]
-	commonLinearSystemState[T]
-	lMatrix [][]T
-	uMatrix [][]T
+	lTracker, uTracker commonLinearSystemState[T]
 }
 
 func (mtd *LUDecompositionMethod[T]) L() [][]T {
@@ -22,8 +24,16 @@ func (mtd *LUDecompositionMethod[T]) U() [][]T {
 	return mtd.uMatrix
 }
 
-func (mtd *LUDecompositionMethod[T]) Run(inputMatrix [][]T) (x, y []T, err error) {
-	// Checking if the given matrix is a square
+func (mtd *LUDecompositionMethod[T]) LInteractionData() ([]models.MatrixTransformationStep[T], []models.RootCalculationStep[T]) {
+	return mtd.lTracker.InteractionData()
+}
+
+func (mtd *LUDecompositionMethod[T]) UInteractionData() ([]models.MatrixTransformationStep[T], []models.RootCalculationStep[T]) {
+	return mtd.uTracker.InteractionData()
+}
+
+func (mtd *LUDecompositionMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots []T, err error) {
+	//  Checking if the given matrix is a square
 	if !mtd.isMatrixSquare(inputMatrix) {
 		err = errors.New("the given matrix isn't a square one")
 		return
@@ -39,6 +49,7 @@ func (mtd *LUDecompositionMethod[T]) Run(inputMatrix [][]T) (x, y []T, err error
 		results[index] = equation[matrixSize]
 	}
 
+	det = 1
 	for eqIndex := 0; eqIndex < matrixSize; eqIndex++ {
 		pivot := mtd.uMatrix[eqIndex][eqIndex]
 		equation := mtd.uMatrix[eqIndex]
@@ -47,11 +58,20 @@ func (mtd *LUDecompositionMethod[T]) Run(inputMatrix [][]T) (x, y []T, err error
 			nextEquation := mtd.uMatrix[index]
 			factor := nextEquation[eqIndex] / pivot
 			mtd.uMatrix[index] = mtd.subtractEquations(factor, nextEquation, equation)
+			mtd.uTracker.registerMatrixTransformation(
+				mtd.uMatrix, factor,
+				uint8(index), uint8(eqIndex),
+			)
 			mtd.lMatrix[index][eqIndex] = factor
+			mtd.lTracker.registerMatrixTransformation(
+				mtd.lMatrix, factor, uint8(index), uint8(eqIndex), models.OpAttribution,
+			)
 		}
+		det *= equation[eqIndex]
 	}
 
-	y, x = mtd.calculateXY(matrixSize, results)
+	mtd.lTracker.Roots, mtd.uTracker.Roots = mtd.calculateXY(matrixSize, results)
+	foundRoots = mtd.uTracker.Roots
 	return
 }
 
@@ -67,7 +87,7 @@ func (mtd *LUDecompositionMethod[T]) calculateXY(matrixSize int, results []T) (y
 			}
 		}
 		y[eqIndex] = sum / targetEquation[eqIndex]
-		mtd.registerRootCalculation(y, targetEquation[eqIndex], sum)
+		mtd.lTracker.registerRootCalculation(y, targetEquation[eqIndex], sum)
 	}
 
 	// Solve superior triangle
@@ -79,7 +99,7 @@ func (mtd *LUDecompositionMethod[T]) calculateXY(matrixSize int, results []T) (y
 			sum -= targetEquation[index] * x[index]
 		}
 		x[eqIndex] = sum / targetEquation[eqIndex]
-		mtd.registerRootCalculation(x, targetEquation[eqIndex], sum)
+		mtd.uTracker.registerRootCalculation(x, targetEquation[eqIndex], sum)
 	}
 
 	return
