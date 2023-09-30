@@ -6,7 +6,7 @@ function [det, invMatrix, roots, err] = gaussJordanMethod(inputMatrix)
     if totalEquations != eqLength -1
         err = "the given matrix isn't a square one";
         det = NaN;
-        foundRoots = NaN;
+        roots = NaN;
         invMatrix = NaN;
         return;
     end

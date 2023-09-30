@@ -63,3 +63,27 @@ fprintf('Method: GaussJordan\n');
 fprintf('Determinant: %d\n', det);
 fprintf('Roots:\n'), disp(foundRoots);
 fprintf('Inverse:\n'), disp(invMatrix);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inputMatrix = [
+            2, 1, -1, 3;
+            -1, 3, 2, 1;
+            3, 1, -3, 2;
+            ];
+
+[LMatrix, UMatrix, det, foundRoots, err] = luDecompositionMethod(inputMatrix);
+
+% Report error if the matrix isn't a square one:
+if ~isempty(err)
+    disp(['Error: ', err]);
+    return;
+end
+
+% Report Result:
+fprintf('Method: LU Decomposition\n');
+fprintf('Determinant: %d\n', det);
+fprintf('Roots:\n'), disp(foundRoots);
+
+% Report L and U Matrices
+disp("LMatrix: "); disp(LMatrix);
+disp("UMatrix: "); disp(UMatrix);
