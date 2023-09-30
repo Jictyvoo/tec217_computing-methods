@@ -55,10 +55,8 @@ func (mtd *GaussEliminationMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots 
 			divisionFactor := nextEquation[eqIndex] / equation[eqIndex]
 			equationsMatrix[index] = mtd.subtractEquations(divisionFactor, nextEquation, equation)
 			mtd.registerMatrixTransformation(
-				equationsMatrix,
-				divisionFactor,
-				uint8(eqIndex),
-				uint8(index),
+				equationsMatrix, divisionFactor,
+				uint8(eqIndex), uint8(index),
 			)
 		}
 	}

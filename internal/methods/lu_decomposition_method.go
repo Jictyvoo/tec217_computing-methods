@@ -13,7 +13,7 @@ type LUDecompositionMethod[T models.Numeric] struct {
 	uMatrix     [][]T
 
 	matrixHelper[T]
-	lTracker, uTracker commonLinearSystemState[T]
+	lTracker, uTracker trackedMatrixOperations[T]
 }
 
 func (mtd *LUDecompositionMethod[T]) L() [][]T {
@@ -70,37 +70,17 @@ func (mtd *LUDecompositionMethod[T]) Run(inputMatrix [][]T) (det T, foundRoots [
 		det *= equation[eqIndex]
 	}
 
-	mtd.lTracker.Roots, mtd.uTracker.Roots = mtd.calculateXY(matrixSize, results)
+	mtd.calculateXY(matrixSize, results)
 	foundRoots = mtd.uTracker.Roots
 	return
 }
 
 func (mtd *LUDecompositionMethod[T]) calculateXY(matrixSize int, results []T) (y, x []T) {
 	// Solve Inferior triangle
-	y = make([]T, matrixSize)
-	for eqIndex := 0; eqIndex < matrixSize; eqIndex++ {
-		targetEquation := mtd.L()[eqIndex]
-		sum := results[eqIndex]
-		for index := 0; index < matrixSize; index++ {
-			if index != eqIndex {
-				sum -= targetEquation[index] * y[index]
-			}
-		}
-		y[eqIndex] = sum / targetEquation[eqIndex]
-		mtd.lTracker.registerRootCalculation(y, targetEquation[eqIndex], sum)
-	}
+	y = mtd.lTracker.forwardSubstitution(mtd.L(), matrixSize, results)
 
 	// Solve superior triangle
-	x = make([]T, matrixSize)
-	for eqIndex := matrixSize - 1; eqIndex >= 0; eqIndex-- {
-		targetEquation := mtd.U()[eqIndex]
-		sum := y[eqIndex]
-		for index := eqIndex + 1; index < matrixSize; index++ {
-			sum -= targetEquation[index] * x[index]
-		}
-		x[eqIndex] = sum / targetEquation[eqIndex]
-		mtd.uTracker.registerRootCalculation(x, targetEquation[eqIndex], sum)
-	}
+	x = mtd.uTracker.backwardSubstitution(mtd.U(), matrixSize, y)
 
 	return
 }

@@ -134,3 +134,47 @@ func (mtd *commonLinearSystemState[T]) Reset() {
 	mtd.transformationSteps = mtd.transformationSteps[:0]
 	mtd.rootCalculationSteps = mtd.rootCalculationSteps[:0]
 }
+
+type trackedMatrixOperations[T models.Numeric] struct {
+	commonLinearSystemState[T]
+}
+
+// forwardSubstitution Solve Inferior triangle
+func (mtd *trackedMatrixOperations[T]) forwardSubstitution(
+	inputMatrix [][]T, matrixSize int, results []T,
+) (y []T) {
+	y = make([]T, matrixSize)
+	for eqIndex := 0; eqIndex < matrixSize; eqIndex++ {
+		targetEquation := inputMatrix[eqIndex]
+		sum := results[eqIndex]
+		for index := 0; index < matrixSize; index++ {
+			if index != eqIndex {
+				sum -= targetEquation[index] * y[index]
+			}
+		}
+		y[eqIndex] = sum / targetEquation[eqIndex]
+		mtd.registerRootCalculation(y, targetEquation[eqIndex], sum)
+	}
+
+	mtd.Roots = y
+	return
+}
+
+// backwardSubstitution Solve superior triangle
+func (mtd *trackedMatrixOperations[T]) backwardSubstitution(
+	inputMatrix [][]T, matrixSize int, y []T,
+) (x []T) {
+	x = make([]T, matrixSize)
+	for eqIndex := matrixSize - 1; eqIndex >= 0; eqIndex-- {
+		targetEquation := inputMatrix[eqIndex]
+		sum := y[eqIndex]
+		for index := eqIndex + 1; index < matrixSize; index++ {
+			sum -= targetEquation[index] * x[index]
+		}
+		x[eqIndex] = sum / targetEquation[eqIndex]
+		mtd.registerRootCalculation(x, targetEquation[eqIndex], sum)
+	}
+
+	mtd.Roots = x
+	return
+}
