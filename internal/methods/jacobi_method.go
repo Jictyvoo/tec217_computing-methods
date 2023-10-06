@@ -14,7 +14,7 @@ type JacobiMethod[T models.Numeric] struct {
 
 	matrixHelper[T]
 	rootCalculationSteps commonFuncZeroState[T]
-	matrixSetup          commonLinearSystemState[T]
+	matrixSetup          trackedMatrixOperations[T]
 }
 
 func (mtd *JacobiMethod[T]) innerProduct(a []T, b []T) T {
@@ -61,23 +61,7 @@ func (mtd *JacobiMethod[T]) Run(
 	d := make([]T, matrixSize)
 
 	// Finished pre-setup, now runs the method
-	for eqIndex := 0; eqIndex < matrixSize; eqIndex++ {
-		for index := 0; index < matrixSize; index++ {
-			var setValue T = 0
-			if eqIndex == index {
-				divisor, dividend := results[eqIndex], workingMatrix[eqIndex][eqIndex]
-				d[eqIndex] = divisor / dividend
-				mtd.matrixSetup.registerRootCalculation(d, dividend, divisor)
-			} else {
-				setValue = -workingMatrix[eqIndex][index] / workingMatrix[eqIndex][eqIndex]
-			}
-
-			C[eqIndex][index] = setValue
-			mtd.matrixSetup.registerMatrixTransformation(
-				C, setValue, uint8(eqIndex), uint8(index), models.OpAttribution,
-			)
-		}
-	}
+	mtd.matrixSetup.mountCAndD(results, workingMatrix, C, d)
 
 	foundRoots = make([]T, matrixSize)
 	mtd.matrixSetup.Roots = d
