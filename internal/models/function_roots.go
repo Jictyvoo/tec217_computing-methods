@@ -6,7 +6,7 @@ type (
 		Interaction    uint64
 		InputValues    []T
 		RelativeError  T
-		Value          T
+		ResultValues   []T
 		FunctionResult T
 	}
 )

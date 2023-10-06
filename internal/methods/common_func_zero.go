@@ -1,6 +1,10 @@
 package methods
 
-import "github.com/jictyvoo/tec217_computing-methods/internal/models"
+import (
+	"slices"
+
+	"github.com/jictyvoo/tec217_computing-methods/internal/models"
+)
 
 type commonFuncZeroState[T models.Numeric] struct {
 	finalResult  T
@@ -10,14 +14,14 @@ type commonFuncZeroState[T models.Numeric] struct {
 //goland:noinspection GoMixedReceiverTypes
 func (mtd *commonFuncZeroState[T]) registerInteraction(
 	inputs []T, totalIteration uint32, relativeError T,
-	rootResult, result T,
+	rootResult T, result ...T,
 ) {
 	mtd.interactions = append(mtd.interactions, models.InteractionData[T]{
 		Interaction:    uint64(totalIteration),
-		InputValues:    inputs,
+		InputValues:    slices.Clone(inputs),
 		RelativeError:  relativeError,
 		FunctionResult: rootResult,
-		Value:          result,
+		ResultValues:   slices.Clone(result),
 	})
 }
 

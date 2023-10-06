@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"errors"
 	"io"
 	"strconv"
@@ -31,6 +32,7 @@ func WriteInteractionAsCSV(output io.Writer, data []models.InteractionData[float
 		return
 	}
 
+	var tempBytes []byte
 	for _, value := range data {
 		valueInput[0] = strconv.FormatUint(value.Interaction, 10)
 		index := 1
@@ -38,7 +40,10 @@ func WriteInteractionAsCSV(output io.Writer, data []models.InteractionData[float
 			index += count
 			valueInput[index] = strconv.FormatFloat(inputValue, 'f', 6, 64)
 		}
-		valueInput[index+1] = strconv.FormatFloat(value.Value, 'f', 6, 64)
+		if tempBytes, err = json.Marshal(value.ResultValues); err != nil {
+			return
+		}
+		valueInput[index+1] = string(tempBytes)
 		valueInput[index+2] = strconv.FormatFloat(value.FunctionResult, 'f', 6, 64)
 		valueInput[index+3] = strconv.FormatFloat(value.RelativeError, 'f', 6, 64)
 		if err = writer.Write(valueInput); err != nil {
