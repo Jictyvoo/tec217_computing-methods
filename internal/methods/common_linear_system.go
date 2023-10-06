@@ -2,6 +2,7 @@ package methods
 
 import (
 	"math"
+	"slices"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
@@ -236,6 +237,7 @@ func (mtd *trackedMatrixOperations[T]) mountCAndD(
 			)
 		}
 	}
+	mtd.Roots = slices.Clone(d)
 
 	return
 }

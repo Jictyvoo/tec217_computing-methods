@@ -157,6 +157,34 @@ func quest05Jacobi() {
 	views.ReportLinearSystemResult("", 0, method.D(), &matrixBuffer)
 }
 
+func quest06GaussSeidel() {
+	var (
+		matrixBuffer, rootBuffer strings.Builder
+		method                   = methods.GaussSeidelMethod[float64]{}
+	)
+
+	foundRoots, totalIterations, err := method.Run(
+		[][]float64{
+			{1, 0.5, -0.1, 0.2},
+			{0.2, 1, -0.2, -2},
+			{-0.1, -0.2, 1, 1},
+		}, []float64{0, 0, 0}, 1000, 1e-5,
+	)
+
+	triangulationSteps, dCalculationSteps, rootCalculationSteps := method.InteractionData()
+	err = errors.Join(
+		err,
+		utils.WriteInteractionAsCSV(&rootBuffer, rootCalculationSteps),
+		utils.WriteLinearInteractionAsCSV(&matrixBuffer, triangulationSteps, dCalculationSteps),
+	)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("GaussSeidel", &rootBuffer, totalIterations, foundRoots...)
+	views.ReportLinearSystemResult("", 0, method.D(), &matrixBuffer)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -173,4 +201,5 @@ func main() {
 	quest03GaussJordan()
 	quest04LUDecomposition()
 	quest05Jacobi()
+	quest06GaussSeidel()
 }

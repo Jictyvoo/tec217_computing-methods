@@ -14,8 +14,18 @@ type GaussSeidelMethod[T models.Numeric] struct {
 	xError []T
 
 	matrixHelper[T]
-	matrixSetup trackedMatrixOperations[T]
-	commonLinearSystemState[T]
+	matrixSetup          trackedMatrixOperations[T]
+	rootCalculationSteps commonFuncZeroState[T]
+}
+
+func (mtd *GaussSeidelMethod[T]) InteractionData() (
+	[]models.MatrixTransformationStep[T], []models.RootCalculationStep[T], []models.InteractionData[T],
+) {
+	return mtd.matrixSetup.transformationSteps, mtd.matrixSetup.rootCalculationSteps, mtd.rootCalculationSteps.interactions
+}
+
+func (mtd *GaussSeidelMethod[T]) D() []T {
+	return mtd.matrixSetup.Roots
 }
 
 func (mtd *GaussSeidelMethod[T]) sassenfeld(inputMatrix [][]T) bool {
@@ -88,6 +98,9 @@ func (mtd *GaussSeidelMethod[T]) Run(
 				maximumXError = mtd.xError[index]
 			}
 		}
+		mtd.rootCalculationSteps.registerInteraction(
+			oldSolution, iteration, maximumXError, 0, foundRoots...,
+		)
 		if maximumXError < epsilon {
 			return
 		}
@@ -114,8 +127,10 @@ func (mtd *GaussSeidelMethod[T]) calculateRoots(
 		for j := index + 1; j < matrixSize; j++ {
 			summation[1] -= matrixEquation[j] * oldRoots[j]
 		}
+
+		commonDivisor := matrixEquation[index]
 		// Assigning the new value to foundRoots
-		foundRoots[index] = ((summation[0] + summation[1]) / matrixEquation[index]) + (results[index] / matrixEquation[index])
+		foundRoots[index] = ((summation[0] + summation[1]) / commonDivisor) + (results[index] / commonDivisor)
 	}
 	return foundRoots
 }
