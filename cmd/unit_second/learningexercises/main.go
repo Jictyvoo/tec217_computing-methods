@@ -129,6 +129,34 @@ func quest04LUDecomposition() {
 	views.ReportMatrixTable("U", &uBuffer)
 }
 
+func quest05Jacobi() {
+	var (
+		matrixBuffer, rootBuffer strings.Builder
+		method                   = methods.JacobiMethod[float64]{}
+	)
+
+	foundRoots, totalIterations, err := method.Run(
+		[][]float64{
+			{5, 1, 1, 5},
+			{3, 4, 1, 6},
+			{3, 3, 6, 0},
+		}, 0, 1000, 0.05,
+	)
+
+	triangulationSteps, dCalculationSteps, rootCalculationSteps := method.InteractionData()
+	err = errors.Join(
+		err,
+		utils.WriteInteractionAsCSV(&rootBuffer, rootCalculationSteps),
+		utils.WriteLinearInteractionAsCSV(&matrixBuffer, triangulationSteps, dCalculationSteps),
+	)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("Jacobi", &rootBuffer, totalIterations, foundRoots...)
+	views.ReportLinearSystemResult("", 0, method.D(), &matrixBuffer)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -144,4 +172,5 @@ func main() {
 	quest02GaussPivot()
 	quest03GaussJordan()
 	quest04LUDecomposition()
+	quest05Jacobi()
 }

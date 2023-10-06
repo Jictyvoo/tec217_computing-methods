@@ -25,6 +25,10 @@ func (mtd *JacobiMethod[T]) innerProduct(a []T, b []T) T {
 	return result
 }
 
+func (mtd *JacobiMethod[T]) D() []T {
+	return mtd.matrixSetup.Roots
+}
+
 func (mtd *JacobiMethod[T]) CalculatedErrors() []T {
 	return mtd.xError
 }
@@ -76,6 +80,7 @@ func (mtd *JacobiMethod[T]) Run(
 	}
 
 	foundRoots = make([]T, matrixSize)
+	mtd.matrixSetup.Roots = d
 	xPrev := make([]T, matrixSize)
 	mtd.xError = make([]T, matrixSize)
 
