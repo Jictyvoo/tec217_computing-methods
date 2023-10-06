@@ -87,3 +87,27 @@ fprintf('Roots:\n'), disp(foundRoots);
 % Report L and U Matrices
 disp("LMatrix: "); disp(LMatrix);
 disp("UMatrix: "); disp(UMatrix);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inputMatrix = [
+            5, 1, 1, 5;
+            3, 4, 1, 6;
+            3, 3, 6, 0
+            ];
+initialGuess = 0;
+maxIterations = 1000;
+epsilon = 0.05;
+
+% Run the Jacobi method.
+[foundRoots, totalIterations, err] = jacobiMethod(inputMatrix, initialGuess, maxIterations, epsilon);
+
+% Report error if there is one:
+if ~isempty(err)
+    disp(['Error: ', err]);
+    return;
+end
+
+% Report Result:
+fprintf('Method: Jacobi\n');
+fprintf('Total Iterations: %d\n', totalIterations);
+fprintf('Roots:\n'), disp(foundRoots);

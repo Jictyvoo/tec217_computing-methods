@@ -65,11 +65,11 @@ func (mtd *JacobiMethod[T]) Run(
 		for index := 0; index < matrixSize; index++ {
 			var setValue T = 0
 			if eqIndex == index {
-				divisor, dividend := results[eqIndex], inputMatrix[eqIndex][eqIndex]
+				divisor, dividend := results[eqIndex], workingMatrix[eqIndex][eqIndex]
 				d[eqIndex] = divisor / dividend
-				mtd.matrixSetup.registerRootCalculation(d, divisor, dividend)
+				mtd.matrixSetup.registerRootCalculation(d, dividend, divisor)
 			} else {
-				setValue = -inputMatrix[eqIndex][index] / inputMatrix[eqIndex][eqIndex]
+				setValue = -workingMatrix[eqIndex][index] / workingMatrix[eqIndex][eqIndex]
 			}
 
 			C[eqIndex][index] = setValue
