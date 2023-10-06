@@ -57,6 +57,15 @@ func (mtd matrixHelper[T]) makeIdentity(size uint8) (identity [][]T) {
 	return
 }
 
+func (mtd matrixHelper[T]) newEmptyMatrix(size uint8) (identity [][]T) {
+	identity = make([][]T, size)
+	for index := uint8(0); index < size; index++ {
+		identity[index] = make([]T, size)
+	}
+
+	return
+}
+
 func (mtd matrixHelper[T]) isMatrixSquare(equationsMatrix [][]T) bool {
 	totalEquations := len(equationsMatrix)
 	for _, equation := range equationsMatrix {
@@ -82,6 +91,32 @@ func (mtd matrixHelper[T]) subtractEquations(factor T, a, b []T) (result []T) {
 		result[index] = a[index] - value*factor
 	}
 	return
+}
+
+func (mtd matrixHelper[T]) isDiagonallyDominant(A [][]T) bool {
+	// Get the dimensions of the matrix
+	matrixSize := len(A)
+
+	for index := 0; index < matrixSize; index++ {
+		sum := T(0)
+		for subIndex := 0; subIndex < matrixSize; subIndex++ {
+			if index != subIndex {
+				// Add the absolute value to the accumulator
+				absoluteAij := A[index][subIndex]
+				if A[index][subIndex] < 0 {
+					absoluteAij = -A[index][subIndex]
+				}
+				sum += absoluteAij
+			}
+		}
+		// Check if the value on the main diagonal is less than sum
+		if A[index][index] < sum {
+			return false
+		}
+	}
+
+	// The matrix is diagonally dominant
+	return true
 }
 
 type commonLinearSystemState[T models.Numeric] struct {
