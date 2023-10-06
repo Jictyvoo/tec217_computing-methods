@@ -25,9 +25,7 @@ func quest01SocialControl() {
 		ks    = 0.09
 	)
 
-	var (
-		buffer strings.Builder
-	)
+	var buffer strings.Builder
 
 	fX := func(x float64) float64 {
 		return (Psmax / (1 + (((Psmax / P0) - 1) * math.Pow(math.E, -ks*x)))) - (1.2 * ((Pumax * math.Pow(math.E, -ku*x)) + Pumin))
@@ -46,7 +44,7 @@ func quest01SocialControl() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("SocialControl(BisectionMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("SocialControl(BisectionMethod)", &buffer, totalInteractions, result)
 	}
 
 	// False Position
@@ -62,7 +60,7 @@ func quest01SocialControl() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("SocialControl(FalsePositionMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("SocialControl(FalsePositionMethod)", &buffer, totalInteractions, result)
 	}
 
 	// Secant
@@ -78,7 +76,7 @@ func quest01SocialControl() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("SocialControl(SecantMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("SocialControl(SecantMethod)", &buffer, totalInteractions, result)
 	}
 
 	// Linear Iteration
@@ -98,7 +96,10 @@ func quest01SocialControl() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("SocialControl(LinearIterationMethod)", result, totalInteractions, &buffer)
+		views.ReportResult(
+			"SocialControl(LinearIterationMethod)",
+			&buffer, totalInteractions, result,
+		)
 	}
 
 	// Newton Raphson
@@ -122,7 +123,7 @@ func quest01SocialControl() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("SocialControl(NewtonRaphsonMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("SocialControl(NewtonRaphsonMethod)", &buffer, totalInteractions, result)
 	}
 }
 
@@ -157,7 +158,7 @@ func quest02ElectricCharge() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("ElectricCharge(BisectionMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("ElectricCharge(BisectionMethod)", &buffer, totalInteractions, result)
 	}
 
 	// False Position
@@ -173,7 +174,10 @@ func quest02ElectricCharge() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("ElectricCharge(FalsePositionMethod)", result, totalInteractions, &buffer)
+		views.ReportResult(
+			"ElectricCharge(FalsePositionMethod)",
+			&buffer, totalInteractions, result,
+		)
 	}
 
 	// Secant
@@ -189,7 +193,7 @@ func quest02ElectricCharge() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("ElectricCharge(SecantMethod)", result, totalInteractions, &buffer)
+		views.ReportResult("ElectricCharge(SecantMethod)", &buffer, totalInteractions, result)
 	}
 
 	// Linear Iteration
@@ -209,7 +213,10 @@ func quest02ElectricCharge() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("ElectricCharge(LinearIterationMethod)", result, totalInteractions, &buffer)
+		views.ReportResult(
+			"ElectricCharge(LinearIterationMethod)",
+			&buffer, totalInteractions, result,
+		)
 	}
 
 	// Newton Raphson
@@ -218,7 +225,9 @@ func quest02ElectricCharge() {
 		const x0 = 0
 
 		f1X := func(x float64) float64 {
-			return 3.57652/math.Sqrt(math.Pow(math.Pow(x, 2)+0.7255, 3)) - ((10.7295 * math.Pow(x, 2)) / math.Sqrt(math.Pow(math.Pow(x, 2)+0.7255, 2)))
+			return 3.57652/math.Sqrt(
+				math.Pow(math.Pow(x, 2)+0.7255, 3),
+			) - ((10.7295 * math.Pow(x, 2)) / math.Sqrt(math.Pow(math.Pow(x, 2)+0.7255, 2)))
 		}
 		method := methods.NewtonRaphsonMethod{}
 		result, totalInteractions, err := method.Run(
@@ -229,7 +238,10 @@ func quest02ElectricCharge() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("ElectricCharge(NewtonRaphsonMethod)", result, totalInteractions, &buffer)
+		views.ReportResult(
+			"ElectricCharge(NewtonRaphsonMethod)",
+			&buffer, totalInteractions, result,
+		)
 	}
 }
 

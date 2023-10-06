@@ -35,9 +35,9 @@ func WriteInteractionAsCSV(output io.Writer, data []models.InteractionData[float
 	var tempBytes []byte
 	for _, value := range data {
 		valueInput[0] = strconv.FormatUint(value.Interaction, 10)
-		index := 1
+		index := 0
 		for count, inputValue := range value.InputValues {
-			index += count
+			index = count + 1
 			valueInput[index] = strconv.FormatFloat(inputValue, 'f', 6, 64)
 		}
 		if tempBytes, err = json.Marshal(value.ResultValues); err != nil {

@@ -28,7 +28,7 @@ func quest01Bisection() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("Bisection", result, totalInteractions, &buffer)
+	views.ReportResult("Bisection", &buffer, totalInteractions, result)
 }
 
 func quest02FalsePosition() {
@@ -51,7 +51,7 @@ func quest02FalsePosition() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("FalsePosition", result, totalInteractions, &buffer)
+	views.ReportResult("FalsePosition", &buffer, totalInteractions, result)
 }
 
 func quest03LinearIteration() {
@@ -77,7 +77,7 @@ func quest03LinearIteration() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("LinearIteration", result, totalInteractions, &buffer)
+	views.ReportResult("LinearIteration", &buffer, totalInteractions, result)
 }
 
 func quest04NewtonRaphson() {
@@ -103,7 +103,7 @@ func quest04NewtonRaphson() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("NewtonRaphson", result, totalInteractions, &buffer)
+	views.ReportResult("NewtonRaphson", &buffer, totalInteractions, result)
 }
 
 func quest05Secant() {
@@ -128,7 +128,7 @@ func quest05Secant() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("Secant", result, totalInteractions, &buffer)
+	views.ReportResult("Secant", &buffer, totalInteractions, result)
 }
 
 func quest06PhysicsMadness() {
@@ -156,7 +156,7 @@ func quest06PhysicsMadness() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("PhysicsMadness(NewtonRaphson)", result, totalInteractions, &buffer)
+	views.ReportResult("PhysicsMadness(NewtonRaphson)", &buffer, totalInteractions, result)
 
 	{
 		const h = 1e-7 // Step size for finite difference

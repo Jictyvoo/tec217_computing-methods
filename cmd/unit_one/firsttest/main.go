@@ -35,7 +35,7 @@ func quest01() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("Question 01", result, totalInteractions, &buffer)
+		views.ReportResult("Question 01", &buffer, totalInteractions, result)
 		buffer.Reset()
 	}
 
@@ -57,7 +57,7 @@ func quest01() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("Question 01", result, totalInteractions, &buffer)
+		views.ReportResult("Question 01", &buffer, totalInteractions, result)
 		buffer.Reset()
 	}
 }
@@ -85,7 +85,7 @@ func quest02() {
 			views.ReportError(err)
 			return
 		}
-		views.ReportResult("Question 02", result, totalInteractions, &buffer)
+		views.ReportResult("Question 02", &buffer, totalInteractions, result)
 		buffer.Reset()
 	}
 }
@@ -117,7 +117,7 @@ func quest03() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("Question 03", result, totalInteractions, &buffer)
+	views.ReportResult("Question 03", &buffer, totalInteractions, result)
 	buffer.Reset()
 }
 
@@ -146,7 +146,7 @@ func quest04() {
 		views.ReportError(err)
 		return
 	}
-	views.ReportResult("Question 04", result, totalInteractions, &buffer)
+	views.ReportResult("Question 04", &buffer, totalInteractions, result)
 	buffer.Reset()
 }
 

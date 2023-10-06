@@ -1,6 +1,7 @@
 package views
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 
@@ -12,19 +13,29 @@ func ReportError(err error) {
 }
 
 func ReportResult(
-	methodName string, result float64,
-	totalIterations uint32, outTable fmt.Stringer,
+	methodName string, outTable fmt.Stringer,
+	totalIterations uint32, result ...float64,
 ) {
-	fmt.Println(
-		colors.Purple(methodName) +
-			" - " +
-			colors.Cyan(fmt.Sprintf("%d Iterations", totalIterations)),
-	)
-	slog.Info(
-		fmt.Sprintf(
+	if methodName != "" {
+		fmt.Println(
+			colors.Purple(methodName) +
+				" - " +
+				colors.Cyan(fmt.Sprintf("%d Iterations", totalIterations)),
+		)
+	}
+
+	var logMessage string
+	if len(result) == 1 {
+		logMessage = fmt.Sprintf(
 			"The value of root is : %.5f. After %d iteractions",
 			result, totalIterations,
-		),
+		)
+	} else {
+		msgBytes, _ := json.Marshal(result)
+		logMessage = string(msgBytes)
+	}
+	slog.Info(
+		logMessage,
 		slog.String("method-name", methodName),
 		slog.String("output-table", outTable.String()),
 	)
@@ -36,7 +47,9 @@ func ReportLinearSystemResult(
 	foundRoots []float64,
 	outTable fmt.Stringer,
 ) {
-	fmt.Println(colors.Purple(methodName))
+	if methodName != "" {
+		fmt.Println(colors.Purple(methodName))
+	}
 	slog.Info(
 		fmt.Sprintf(
 			"Det: %.2f. Found roots: %v", det, foundRoots,
