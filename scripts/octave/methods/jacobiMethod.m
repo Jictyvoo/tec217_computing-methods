@@ -2,6 +2,15 @@ function [foundRoots, currentIteration, err] = jacobiMethod(inputMatrix, initial
     err = ""; % Initialize err to an empty string
     currentIteration = 0;
 
+    % Checking if the given matrix is a square one
+    [matrixSize, eqLength] = size(inputMatrix);
+    if matrixSize != eqLength -1
+        err = "the given matrix isn't a square one";
+        foundRoots = NaN;
+        return;
+    endif
+
+    % Checking if it is diagonally dominant
     if isDiagonallyDominant(inputMatrix) == false
         foundRoots = NaN
         err = "the given matrix is not diagonally dominant";

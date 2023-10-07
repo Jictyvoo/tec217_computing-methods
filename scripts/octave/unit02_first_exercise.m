@@ -111,3 +111,27 @@ end
 fprintf('Method: Jacobi\n');
 fprintf('Total Iterations: %d\n', totalIterations);
 fprintf('Roots:\n'), disp(foundRoots);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+inputMatrix = [
+            1, 0.5, -0.1, 0.2;
+            0.2, 1, -0.2, -2;
+            -0.1, -0.2, 1, 1
+            ];
+X0 = [0, 0, 0];
+maxIterations = 1000;
+epsilon = 1e-5;
+
+% Run the Gauss-Seidel method.
+[foundRoots, totalIterations, err] = gaussSeidelMethod(inputMatrix, X0, maxIterations, epsilon);
+
+% Report error if there is one.
+if ~isempty(err)
+    disp(['Error: ', err]);
+    return;
+end
+
+% Report Result:
+fprintf('Method: Gauss-Seidel\n');
+fprintf('Total Iterations: %d\n', totalIterations);
+fprintf('Roots:\n'), disp(foundRoots);
