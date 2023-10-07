@@ -96,10 +96,6 @@ func quest04LUDecomposition() {
 			{2, 1, -1, 3},
 			{-1, 3, 2, 1},
 			{3, 1, -3, 2},
-			/*{2, 3, -4, 4, -1},
-			{-4, -7, 11, -6, 5},
-			{6, 11, -20, 10, -13},
-			{-2, -7, 22, -6, 25},*/
 		},
 	)
 
@@ -160,7 +156,9 @@ func quest05Jacobi() {
 func quest06GaussSeidel() {
 	var (
 		matrixBuffer, rootBuffer strings.Builder
-		method                   = methods.GaussSeidelMethod[float64]{}
+		method                   = methods.GaussSeidelMethod[float64]{
+			Criteria: methods.CriteriaSassenfeld,
+		}
 	)
 
 	foundRoots, totalIterations, err := method.Run(
@@ -185,6 +183,33 @@ func quest06GaussSeidel() {
 	views.ReportLinearSystemResult("", 0, method.D(), &matrixBuffer)
 }
 
+func quest07GaussSeidelSOR() {
+	var (
+		matrixBuffer, rootBuffer strings.Builder
+		method                   = methods.GaussSeidelMethod[float64]{RelaxationFactor: 1}
+	)
+
+	foundRoots, totalIterations, err := method.Run(
+		[][]float64{
+			{-3, 12, 9},
+			{10, -2, 8},
+		}, []float64{0, 0}, 1000, 0.01,
+	)
+
+	triangulationSteps, dCalculationSteps, rootCalculationSteps := method.InteractionData()
+	err = errors.Join(
+		err,
+		utils.WriteInteractionAsCSV(&rootBuffer, rootCalculationSteps),
+		utils.WriteLinearInteractionAsCSV(&matrixBuffer, triangulationSteps, dCalculationSteps),
+	)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("GaussSeidel-SOR", &rootBuffer, totalIterations, foundRoots...)
+	views.ReportLinearSystemResult("", 0, method.D(), &matrixBuffer)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -202,4 +227,5 @@ func main() {
 	quest04LUDecomposition()
 	quest05Jacobi()
 	quest06GaussSeidel()
+	quest07GaussSeidelSOR()
 }

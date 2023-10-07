@@ -1,11 +1,19 @@
 package methods
 
 import (
+	"errors"
 	"math"
 	"slices"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils"
+)
+
+type MatrixCheckCriteria uint8
+
+const (
+	CriteriaDiagonalDominant MatrixCheckCriteria = 1 << iota
+	CriteriaSassenfeld
 )
 
 type matrixHelper[T models.Numeric] struct{}
@@ -118,6 +126,45 @@ func (mtd matrixHelper[T]) isDiagonallyDominant(A [][]T) bool {
 
 	// The matrix is diagonally dominant
 	return true
+}
+
+func (mtd matrixHelper[T]) sassenfeld(A [][]T) bool {
+	matrixSize := len(A)
+	betas := make([]T, matrixSize)
+
+	for index := 0; index < matrixSize; index++ {
+		tempValue := 0.0
+
+		for loopCount := 0; loopCount < index; loopCount++ {
+			element := A[index][loopCount]
+			tempValue += math.Abs(float64(element)) * float64(betas[loopCount])
+		}
+
+		for subIndex := index + 1; subIndex < matrixSize; subIndex++ {
+			tempValue += math.Abs(float64(A[index][subIndex]))
+		}
+
+		if betas[index] = T(tempValue / math.Abs(float64(A[index][index]))); betas[index] >= 1 {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (mtd matrixHelper[T]) executeCriteria(A [][]T, criteria MatrixCheckCriteria) error {
+	switch criteria {
+	case CriteriaDiagonalDominant:
+		if !mtd.isDiagonallyDominant(A) {
+			return errors.New("the given matrix is not diagonally dominant")
+		}
+	case CriteriaSassenfeld:
+		if !mtd.sassenfeld(A) {
+			return errors.New("the given matrix does not respect the Sassenfeld criteria")
+		}
+	}
+
+	return nil
 }
 
 type commonLinearSystemState[T models.Numeric] struct {

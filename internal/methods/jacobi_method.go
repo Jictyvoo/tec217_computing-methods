@@ -1,7 +1,6 @@
 package methods
 
 import (
-	"errors"
 	"fmt"
 	"math"
 
@@ -43,8 +42,7 @@ func (mtd *JacobiMethod[T]) Run(
 	inputMatrix [][]T,
 	initialGuess T, maxIterations uint32, epsilon T,
 ) (foundRoots []T, currentIteration uint32, err error) {
-	if !mtd.isDiagonallyDominant(inputMatrix) {
-		err = errors.New("the given matrix is not diagonally dominant")
+	if err = mtd.executeCriteria(inputMatrix, CriteriaDiagonalDominant); err != nil {
 		return
 	}
 

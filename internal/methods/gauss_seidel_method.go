@@ -11,7 +11,9 @@ import (
 )
 
 type GaussSeidelMethod[T models.Numeric] struct {
-	xError []T
+	xError           []T
+	RelaxationFactor T
+	Criteria         MatrixCheckCriteria
 
 	matrixHelper[T]
 	matrixSetup          trackedMatrixOperations[T]
@@ -28,30 +30,6 @@ func (mtd *GaussSeidelMethod[T]) D() []T {
 	return mtd.matrixSetup.Roots
 }
 
-func (mtd *GaussSeidelMethod[T]) sassenfeld(inputMatrix [][]T) bool {
-	matrixSize := len(inputMatrix)
-	betas := make([]T, matrixSize)
-
-	for index := 0; index < matrixSize; index++ {
-		tempValue := 0.0
-
-		for loopCount := 0; loopCount < index; loopCount++ {
-			element := inputMatrix[index][loopCount]
-			tempValue += math.Abs(float64(element)) * float64(betas[loopCount])
-		}
-
-		for subIndex := index + 1; subIndex < matrixSize; subIndex++ {
-			tempValue += math.Abs(float64(inputMatrix[index][subIndex]))
-		}
-
-		if betas[index] = T(tempValue / math.Abs(float64(inputMatrix[index][index]))); betas[index] >= 1 {
-			return false
-		}
-	}
-
-	return true
-}
-
 func (mtd *GaussSeidelMethod[T]) Run(
 	inputMatrix [][]T, X0 []T, maxIterations uint32, epsilon T,
 ) (foundRoots []T, iteration uint32, err error) {
@@ -62,8 +40,7 @@ func (mtd *GaussSeidelMethod[T]) Run(
 	}
 
 	matrixSize := len(inputMatrix)
-	if !mtd.sassenfeld(inputMatrix) {
-		err = errors.New("the given matrix does not respect the Sassenfeld criteria")
+	if err = mtd.executeCriteria(inputMatrix, mtd.Criteria); err != nil {
 		return
 	}
 
@@ -128,7 +105,12 @@ func (mtd *GaussSeidelMethod[T]) calculateRoots(
 
 		commonDivisor := matrixEquation[index]
 		// Assigning the new value to foundRoots
-		foundRoots[index] = ((summation[0] + summation[1]) / commonDivisor) + (results[index] / commonDivisor)
+		tempRoot := ((summation[0] + summation[1]) / commonDivisor) + (results[index] / commonDivisor)
+		if mtd.RelaxationFactor > 0 {
+			tempRoot = ((1 - mtd.RelaxationFactor) * oldRoots[index]) + (mtd.RelaxationFactor * tempRoot)
+		}
+
+		foundRoots[index] = tempRoot
 	}
 	return foundRoots
 }
