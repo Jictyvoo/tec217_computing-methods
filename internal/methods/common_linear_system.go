@@ -223,11 +223,7 @@ func (mtd *trackedMatrixOperations[T]) mountCAndD(
 	for eqIndex := 0; eqIndex < matrixSize; eqIndex++ {
 		for index := 0; index < matrixSize; index++ {
 			var setValue T = 0
-			if eqIndex == index {
-				divisor, dividend := results[eqIndex], workingMatrix[eqIndex][eqIndex]
-				d[eqIndex] = divisor / dividend
-				mtd.registerRootCalculation(d, dividend, divisor)
-			} else {
+			if eqIndex != index {
 				setValue = -workingMatrix[eqIndex][index] / workingMatrix[eqIndex][eqIndex]
 			}
 
@@ -236,6 +232,9 @@ func (mtd *trackedMatrixOperations[T]) mountCAndD(
 				C, setValue, uint8(eqIndex), uint8(index), models.OpAttribution,
 			)
 		}
+		divisor, dividend := results[eqIndex], workingMatrix[eqIndex][eqIndex]
+		d[eqIndex] = divisor / dividend
+		mtd.registerRootCalculation(d, dividend, divisor)
 	}
 	mtd.Roots = slices.Clone(d)
 

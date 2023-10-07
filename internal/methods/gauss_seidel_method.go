@@ -44,9 +44,7 @@ func (mtd *GaussSeidelMethod[T]) sassenfeld(inputMatrix [][]T) bool {
 			tempValue += math.Abs(float64(inputMatrix[index][subIndex]))
 		}
 
-		betas[index] = T(tempValue / math.Abs(float64(inputMatrix[index][index])))
-
-		if betas[index] >= 1 {
+		if betas[index] = T(tempValue / math.Abs(float64(inputMatrix[index][index]))); betas[index] >= 1 {
 			return false
 		}
 	}
