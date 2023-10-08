@@ -45,7 +45,7 @@ function ssnfd = sassenfeld(A)
     for index = 1:matrixSize
         tempValue = 0;
         for loopCount = 1:index - 1
-            tempValue += abs(A(index, loopCount)) * betas(j);
+            tempValue += abs(A(index, loopCount)) * betas(loopCount);
         endfor
         for subIndex = index + 1:matrixSize
             tempValue += abs(A(index, subIndex));
