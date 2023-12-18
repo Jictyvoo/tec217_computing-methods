@@ -50,8 +50,65 @@ end
 % Report Result:
 fprintf('Method: minimumSquareRegressionMethod\n');
 fprintf('Result [a]:'), disp(a);
-fprintf('Result [r2]:'), disp(r2);
+fprintf('Determination coefficient (r^2): %.4f\n', r2);
 
+% Calculate the adjustment line
+x_fit = linspace(min(x), max(x), 100);
+y_fit = a(1) * x + a(2);
+
+% Calculate total standard deviation
+mean_y = mean(y);
+std_total = sqrt(sum((y - mean_y).^2) / (length(y) - 1));
+
+% Calculate the standard error of the estimate
+std_error = sqrt(sum((y - y_fit).^2) / (length(y) - 2));
+
+% Statistical analysis
+fprintf('Total Standard Deviation: %.4f\n', std_total);
+fprintf('Standard error of the Estimate: %.4f\n', std_error);
+fprintf('\n');
+%%%%%%%%%%% Start code execution %%%%%%%%%%%
+xi = [10; 20; 30; 40; 50; 60; 70; 80];
+yi = [125; 70; 380; 550; 610; 1220; 830; 1450];
+
+% Fitting logarithms using polyfit
+coefficients = polyfit(log(xi), log(yi), 1);
+
+% Adjusted coefficients
+alpha = exp(coefficients(2));
+beta = coefficients(1);
+
+% Creating a function for the fitted power equation
+fitted_function = @(x) alpha * x.^beta;
+
+new_y = fitted_function(xi)
+[a, r2, err] = minimumSquareRegressionMethod(xi, new_y);
+
+% Report error if the matrix isn't a square one:
+if ~isempty(err)
+    disp(['Error: ', err]);
+    return;
+end
+
+% Report Result:
+fprintf('Method: minimumSquareRegressionMethod\n');
+fprintf('Result [a]:'), disp(a);
+fprintf('Determination coefficient (r^2): %.4f\n', r2);
+
+% Calculate the adjustment line
+x_fit = linspace(min(xi), max(xi), 100);
+y_fit = a(1) * xi + a(2);
+
+% Calculate total standard deviation
+mean_y = mean(new_y);
+std_total = sqrt(sum((new_y - mean_y).^2) / (length(new_y) - 1));
+
+% Calculate the standard error of the estimate
+std_error = sqrt(sum((new_y - y_fit).^2) / (length(new_y) - 2));
+
+% Statistical analysis
+fprintf('Total Standard Deviation: %.4f\n', std_total);
+fprintf('Standard error of the Estimate: %.4f\n', std_error);
 fprintf('\n');
 
 %%%%%%%%%%% Start code execution %%%%%%%%%%%

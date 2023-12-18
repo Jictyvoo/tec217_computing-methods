@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log/slog"
+	"math"
 	"os"
 	"strings"
 
@@ -99,17 +100,59 @@ func quest03VandermondeInterpolation() {
 }
 
 func quest04MinimumSquareDirectly() {
+	x := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	y := []float64{1.3, 3.5, 4.2, 5.0, 7.0, 8.8, 10.1, 12.5, 13.0, 15.6}
 	method := methods.MinimumSquareRegressionMethod[float64]{}
 
-	a, r2, err := method.Run(
-		[]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-		[]float64{1.3, 3.5, 4.2, 5.0, 7.0, 8.8, 10.1, 12.5, 13.0, 15.6},
-	)
+	a, r2, err := method.Run(x, y)
 	if err != nil {
 		views.ReportError(err)
 		return
 	}
 	views.ReportResult("MinimumSquareDirectly", nil, uint32(1), r2, a[0], a[1])
+	performAnalyticsCalculations(a, y)
+}
+
+func quest05MinimumSquareWithAdjusts() {
+	xi := []float64{10, 20, 30, 40, 50, 60, 70, 80}
+	yi := []float64{125, 70, 380, 550, 610, 1220, 830, 1450}
+
+	method := methods.MinimumSquareRegressionMethod[float64]{}
+
+	// Fitting a simple power equation (y = alpha * x^beta)
+	logXi := make([]float64, len(xi))
+	logYi := make([]float64, len(yi))
+	for i := range xi {
+		logXi[i] = math.Log(xi[i])
+		logYi[i] = math.Log(yi[i])
+	}
+
+	a, r2, err := method.Run(logXi, logYi)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+
+	coefficients := struct{ alpha, beta float64 }{alpha: a[0], beta: a[1]}
+
+	// Creating a function for the fitted power equation
+	fittedFunction := func(x float64) float64 {
+		return coefficients.alpha * math.Pow(x, coefficients.beta)
+	}
+
+	// New adjusted values
+	newY := make([]float64, len(xi))
+	for index, x := range xi {
+		newY[index] = fittedFunction(x)
+	}
+
+	a, r2, err = method.Run(xi, newY)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("MinimumSquareWithAdjust", nil, uint32(1), r2, a[0], a[1])
+	performAnalyticsCalculations(a, newY)
 }
 
 func main() {
@@ -128,4 +171,5 @@ func main() {
 	quest02LagrangeInterpolation()
 	quest03VandermondeInterpolation()
 	quest04MinimumSquareDirectly()
+	quest05MinimumSquareWithAdjusts()
 }
