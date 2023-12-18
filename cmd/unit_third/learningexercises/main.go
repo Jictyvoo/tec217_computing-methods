@@ -155,6 +155,19 @@ func quest05MinimumSquareWithAdjusts() {
 	performAnalyticsCalculations(a, newY)
 }
 
+func quest06PolynomialRegression() {
+	x := []float64{0.1, 0.4, 0.5, 0.7, 0.7, 0.9}
+	y := []float64{0.61, 0.92, 0.99, 1.52, 1.47, 2.03}
+	method := methods.MinimumSquarePolynomialRegressionMethod[float64]{}
+
+	result, err := method.Run(x, y, 2)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("PolynomialRegression", nil, uint32(1), result...)
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -172,4 +185,5 @@ func main() {
 	quest03VandermondeInterpolation()
 	quest04MinimumSquareDirectly()
 	quest05MinimumSquareWithAdjusts()
+	quest06PolynomialRegression()
 }
