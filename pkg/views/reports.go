@@ -34,10 +34,15 @@ func ReportResult(
 		msgBytes, _ := json.Marshal(result)
 		logMessage = string(msgBytes)
 	}
+
+	var tableStr string
+	if outTable != nil {
+		tableStr = outTable.String()
+	}
 	slog.Info(
 		logMessage,
 		slog.String("method-name", methodName),
-		slog.String("output-table", outTable.String()),
+		slog.String("output-table", tableStr),
 	)
 }
 

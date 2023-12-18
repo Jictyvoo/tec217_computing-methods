@@ -98,6 +98,20 @@ func quest03VandermondeInterpolation() {
 	)
 }
 
+func quest04MinimumSquareDirectly() {
+	method := methods.MinimumSquareRegressionMethod[float64]{}
+
+	a, r2, err := method.Run(
+		[]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+		[]float64{1.3, 3.5, 4.2, 5.0, 7.0, 8.8, 10.1, 12.5, 13.0, 15.6},
+	)
+	if err != nil {
+		views.ReportError(err)
+		return
+	}
+	views.ReportResult("MinimumSquareDirectly", nil, uint32(1), r2, a[0], a[1])
+}
+
 func main() {
 	slog.SetDefault(
 		slog.New(
@@ -113,4 +127,5 @@ func main() {
 	quest01NewtonInterpolation()
 	quest02LagrangeInterpolation()
 	quest03VandermondeInterpolation()
+	quest04MinimumSquareDirectly()
 }
