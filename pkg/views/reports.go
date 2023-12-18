@@ -50,12 +50,17 @@ func ReportLinearSystemResult(
 	if methodName != "" {
 		fmt.Println(colors.Purple(methodName))
 	}
+
+	var tableStr string
+	if outTable != nil {
+		tableStr = outTable.String()
+	}
 	slog.Info(
 		fmt.Sprintf(
 			"Det: %.2f. Found roots: %v", det, foundRoots,
 		),
 		slog.String("method-name", methodName),
-		slog.String("output-table", outTable.String()),
+		slog.String("output-table", tableStr),
 	)
 }
 
