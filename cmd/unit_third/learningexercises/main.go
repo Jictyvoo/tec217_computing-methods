@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/jictyvoo/tec217_computing-methods/internal/methods"
@@ -156,16 +157,21 @@ func quest05MinimumSquareWithAdjusts() {
 }
 
 func quest06PolynomialRegression() {
-	x := []float64{0.1, 0.4, 0.5, 0.7, 0.7, 0.9}
-	y := []float64{0.61, 0.92, 0.99, 1.52, 1.47, 2.03}
+	x := []float64{0, 1, 2, 3, 4, 5}
+	y := []float64{0, 20, 60, 68, 77, 100}
 	method := methods.MinimumSquarePolynomialRegressionMethod[float64]{}
 
-	result, err := method.Run(x, y, 2)
-	if err != nil {
-		views.ReportError(err)
-		return
+	for degree := 1; degree <= 5; degree++ {
+		result, err := method.Run(x, y, float64(degree))
+		if err != nil {
+			views.ReportError(err)
+			return
+		}
+		views.ReportResult(
+			"PolynomialRegression - "+strconv.FormatInt(int64(degree), 10)+" degree",
+			nil, uint32(1), result...,
+		)
 	}
-	views.ReportResult("PolynomialRegression", nil, uint32(1), result...)
 }
 
 func main() {
