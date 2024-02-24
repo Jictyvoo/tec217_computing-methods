@@ -12,6 +12,10 @@ func ReportError(err error) {
 	slog.Error("Failed to find root", slog.String("error", err.Error()))
 }
 
+func ReportSimple(text string, value any) {
+	slog.Info(text, slog.Any("value", value))
+}
+
 func ReportResult(
 	methodName string, outTable fmt.Stringer,
 	totalIterations uint32, result ...float64,
