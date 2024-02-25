@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/jictyvoo/tec217_computing-methods/internal/models"
 	"github.com/jictyvoo/tec217_computing-methods/internal/utils/colors"
 )
 
@@ -16,9 +17,9 @@ func ReportSimple(text string, value any) {
 	slog.Info(text, slog.Any("value", value))
 }
 
-func ReportResult(
+func ReportResult[T models.Numeric](
 	methodName string, outTable fmt.Stringer,
-	totalIterations uint32, result ...float64,
+	totalIterations uint32, result ...T,
 ) {
 	if methodName != "" {
 		fmt.Println(
